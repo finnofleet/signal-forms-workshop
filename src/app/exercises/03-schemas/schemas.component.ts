@@ -1,28 +1,53 @@
+/*
+ * ================================================================
+ * 🎯 EXERCISE GOAL: Schemas and Conditional Logic
+ * ================================================================
+ * You will learn:
+ * - How to create reusable validation schemas with schema()
+ * - How to apply schemas with apply()
+ * - How to use conditional validation with applyWhen()
+ * - DRY principle - define once, use everywhere
+ *
+ * ✅ DONE WHEN:
+ * - addressSchema works for shipping address
+ * - contactSchema validates email and phone
+ * - Business fields required ONLY when customerType === 'business'
+ * - Address required ONLY when deliveryType === 'shipping'
+ * - Switching types dynamically updates validation
+ *
+ * ⏱️ TIME: 12-15 minutes
+ *
+ * 💡 HINT: Check the "Schema Definition" and "applyWhen" sections!
+ * ================================================================
+ */
+
 import { Component, signal, computed } from '@angular/core';
 import { form, FormField, required, email, minLength, pattern, schema, apply, applyWhen } from '@angular/forms/signals';
 
-// Reusable Address Schema
+// TODO 1a: Create reusable addressSchema
+// Type: { street, city, postalCode, country } - all strings
+// Validation:
+// - all fields required (with custom message)
+// - postalCode: pattern /^\d{2}-\d{3}$/ (format XX-XXX)
 const addressSchema = schema<{
   street: string;
   city: string;
   postalCode: string;
   country: string;
 }>((addr) => {
-  required(addr.street, { message: 'Street is required' });
-  required(addr.city, { message: 'City is required' });
-  required(addr.postalCode, { message: 'Postal code is required' });
-  pattern(addr.postalCode, /^\d{2}-\d{3}$/, { message: 'Format: XX-XXX' });
-  required(addr.country, { message: 'Country is required' });
+  // Add validation here
 });
 
-// Reusable Contact Schema
+// TODO 1b: Create contactSchema
+// Type: { email, phone } - both strings
+// Validation:
+// - email: required + email
+// - phone: pattern /^\d{9}$/ (exactly 9 digits)
 const contactSchema = schema<{
   email: string;
   phone: string;
 }>((contact) => {
-  required(contact.email);
-  email(contact.email);
-  pattern(contact.phone, /^\d{9}$/, { message: 'Phone must be 9 digits' });
+  // Add validation here
 });
 
 @Component({
@@ -423,7 +448,7 @@ applyWhen(
   `]
 })
 export class SchemasComponent {
-  // Form Model
+  // TODO 2: Create form model
   protected readonly orderModel = signal({
     customerType: 'personal' as 'personal' | 'business',
     companyName: '',
@@ -441,32 +466,24 @@ export class SchemasComponent {
     }
   });
 
-  // Form with schemas and conditional validation
+  // TODO 3: Create form with schemas and conditional validation
   protected readonly orderForm = form(this.orderModel, (f) => {
-    // Contact schema - always applied
-    apply(f.contact, contactSchema);
+    // TODO 3a: Apply contactSchema to f.contact
+    // Use apply(f.contact, contactSchema)
 
-    // Business fields - only when customerType is 'business'
-    applyWhen(
-      f,
-      ({ valueOf }) => valueOf(f.customerType) === 'business',
-      (form) => {
-        required(form.companyName);
-        required(form.taxId);
-        pattern(form.taxId, /^\d{2}-\d{3}-\d{2}-\d{2}$/);
-      }
-    );
+    // TODO 3b: Conditional validation for business fields
+    // Use applyWhen(f, condition, schema)
+    // Condition: ({ valueOf }) => valueOf(f.customerType) === 'business'
+    // Schema: required(form.companyName), required(form.taxId),
+    //         pattern(form.taxId, /^\d{2}-\d{3}-\d{2}-\d{2}$/)
+    // Hint: See "Conditional Validation with applyWhen" section
 
-    // Shipping address - only when deliveryType is 'shipping'
-    applyWhen(
-      f,
-      ({ valueOf }) => valueOf(f.deliveryType) === 'shipping',
-      (form) => {
-        apply(form.shippingAddress, addressSchema);
-      }
-    );
+    // TODO 3c: Conditional validation for shipping address
+    // applyWhen when deliveryType === 'shipping'
+    // In schema use apply(form.shippingAddress, addressSchema)
   });
 
+  // KEEP AS-IS:
   setCustomerType(type: 'personal' | 'business') {
     this.orderModel.update(m => ({ ...m, customerType: type }));
   }

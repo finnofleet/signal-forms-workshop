@@ -1,5 +1,41 @@
+/*
+ * ================================================================
+ * 🎯 EXERCISE GOAL: Signal Forms Basics
+ * ================================================================
+ * You will learn:
+ * - How to create a form model with signal()
+ * - How to initialize a form with form()
+ * - How to bind inputs with [formField]
+ * - How to read field state (value, errors, touched, valid)
+ *
+ * ✅ PART A - DONE WHEN:
+ * - The form displays correctly
+ * - Email and password validation works
+ * - The Login button is disabled when the form is invalid
+ * - Data is logged to console on Login click
+ *
+ * ⏱️ PART A TIME: 5-7 minutes
+ *
+ * ================== BONUS ==================
+ *
+ * 🎯 PART B - BONUS (5 min):
+ * Extend the form with:
+ * - Add "username" field with required + minLength(3) validation
+ * - Add "rememberMe" field (boolean) with a checkbox
+ * - Extend password validation with minLength(6)
+ *
+ * ✅ PART B - DONE WHEN:
+ * - Username field validates correctly (min 3 characters)
+ * - Remember Me checkbox toggles correctly
+ * - Password requires at least 6 characters
+ * - All fields are included in the form submission
+ *
+ * 💡 HINT: Check the "Key Concepts" section below!
+ * ================================================================
+ */
+
 import { Component, signal } from '@angular/core';
-import { form, FormField, required, email } from '@angular/forms/signals';
+import { form, FormField, required, email, minLength } from '@angular/forms/signals';
 
 @Component({
   selector: 'app-basics',
@@ -26,6 +62,29 @@ import { form, FormField, required, email } from '@angular/forms/signals';
         <h3>📝 Login Form</h3>
 
         <form (submit)="onSubmit()">
+          <!-- PART B - BONUS: Username field -->
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input
+              id="username"
+              type="text"
+              class="form-control"
+              [class.error]="loginForm.username().touched() && loginForm.username().invalid()"
+              [formField]="loginForm.username"
+              placeholder="Enter username"
+            />
+            @if (loginForm.username().touched() && loginForm.username().invalid()) {
+              @for (err of loginForm.username().errors(); track err.kind) {
+                <div class="field-error">
+                  @switch (err.kind) {
+                    @case ('required') { Username is required }
+                    @case ('minLength') { Username must be at least 3 characters }
+                  }
+                </div>
+              }
+            }
+          </div>
+
           <div class="form-group">
             <label for="email">Email</label>
             <input
@@ -63,10 +122,23 @@ import { form, FormField, required, email } from '@angular/forms/signals';
                 <div class="field-error">
                   @switch (err.kind) {
                     @case ('required') { Password is required }
+                    @case ('minLength') { Password must be at least 6 characters }
                   }
                 </div>
               }
             }
+          </div>
+
+          <!-- PART B - BONUS: Remember Me checkbox -->
+          <div class="form-group">
+            <label class="checkbox-wrapper">
+              <input
+                type="checkbox"
+                [checked]="loginForm.rememberMe().value()"
+                (change)="toggleRememberMe()"
+              />
+              <span>Remember me</span>
+            </label>
           </div>
 
           <button type="submit" class="btn btn-primary" [disabled]="loginForm().invalid()">
@@ -165,47 +237,66 @@ this.loginForm.email().errors()    // ValidationError[]</pre>
         transform: translateY(0);
       }
     }
+
+    .checkbox-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+
+      input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+      }
+
+      span {
+        user-select: none;
+      }
+    }
   `]
 })
 export class BasicsComponent {
-  // 1. Form Model
-  protected readonly loginModel = signal({
+  // TODO 1: Create a form model with username, email, password, and rememberMe fields
+  // Use signal() and initialize: username and email with '', password with '', rememberMe with false
+  // PART B BONUS: Add username (string) and rememberMe (boolean) fields
+  protected readonly loginModel = signal<{
+    username: string;
+    email: string;
+    password: string;
+    rememberMe: boolean;
+  }>({
+    username: '',
     email: '',
-    password: ''
+    password: '',
+    rememberMe: false
   });
 
-  // 2. Form with validation schema
+  // TODO 2: Create form with validation
+  // PART A:
+  // - f.email: required() + email()
+  // - f.password: required()
+  // PART B - BONUS:
+  // - f.username: required() + minLength(3)
+  // - f.password: ADD minLength(6) (in addition to required)
+  // - f.rememberMe: no validation needed (boolean)
   protected readonly loginForm = form(this.loginModel, (f) => {
-    required(f.email);
-    email(f.email);
-    required(f.password);
+    // Add validation here
   });
 
-  // Debug info
-  protected formDebugInfo = () => {
-    return JSON.stringify({
-      value: this.loginForm().value(),
-      valid: this.loginForm().valid(),
-      invalid: this.loginForm().invalid(),
-      touched: this.loginForm().touched(),
-      dirty: this.loginForm().dirty(),
-      email: {
-        value: this.loginForm.email().value(),
-        valid: this.loginForm.email().valid(),
-        touched: this.loginForm.email().touched(),
-        errors: this.loginForm.email().errors()
-      },
-      password: {
-        value: this.loginForm.password().value(),
-        valid: this.loginForm.password().valid(),
-        touched: this.loginForm.password().touched(),
-        errors: this.loginForm.password().errors()
-      }
-    }, null, 2);
+  // TODO 3: Create a function that returns JSON.stringify of form information
+  // Use this.loginForm() to access form state
+  // Hint: JSON.stringify(object, null, 2) for nice formatting
+  protected formDebugInfo = (): string => {
+    return JSON.stringify({}, null, 2);
   };
 
   onSubmit() {
     console.log('Form submitted:', this.loginModel());
     alert('Form submitted! Check console for data.');
+  }
+
+  toggleRememberMe() {
+    this.loginModel.update(m => ({ ...m, rememberMe: !m.rememberMe }));
   }
 }
