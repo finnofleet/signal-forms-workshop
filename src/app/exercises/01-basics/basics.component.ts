@@ -61,7 +61,7 @@ import { form, FormField, required, email, minLength } from '@angular/forms/sign
       <section class="exercise-section">
         <h3>📝 Login Form</h3>
 
-        <form (submit)="onSubmit()">
+        <form>
           <!-- PART B - BONUS: Username field -->
           <div class="form-group">
             <label for="username">Username</label>
@@ -141,7 +141,7 @@ import { form, FormField, required, email, minLength } from '@angular/forms/sign
             </label>
           </div>
 
-          <button type="submit" class="btn btn-primary" [disabled]="loginForm().invalid()">
+          <button type="button" (click)="onSubmit()" class="btn btn-primary" [disabled]="loginForm().invalid()">
             Login
           </button>
         </form>
