@@ -1,26 +1,3 @@
-/*
- * ================================================================
- * 🎯 EXERCISE GOAL: Custom Form Controls
- * ================================================================
- * You will learn:
- * - How to understand FormValueControl<T> interface
- * - How to create custom controls with model()
- * - How to integrate custom controls with [formField]
- * - How to avoid ControlValueAccessor boilerplate!
- *
- * ✅ DONE WHEN:
- * - StarRatingComponent works and integrates with form
- * - QuantitySelectorComponent works correctly
- * - Rating validation requires min 1 star
- * - Preview shows current review state
- * - Form validates all fields correctly
- *
- * ⏱️ TIME: 10-12 minutes
- *
- * 💡 HINT: The "FormValueControl Interface" section shows the pattern!
- * ================================================================
- */
-
 import { Component, signal, computed, input, model } from '@angular/core';
 import { form, FormField, required, min, max, validate } from '@angular/forms/signals';
 import { FormValueControl } from '@angular/forms/signals';
@@ -95,24 +72,19 @@ import { FormValueControl } from '@angular/forms/signals';
   `]
 })
 export class StarRatingComponent implements FormValueControl<number> {
-  // TODO 1a: Implement FormValueControl<number>
-  // - value = model<number>(0) - REQUIRED for FormValueControl
-  // - disabled = input<boolean>(false) - optional
+  // FormValueControl implementation
   value = model<number>(0);
   disabled = input<boolean>(false);
 
-  // TODO 1b: Create state and configuration
-  // - hoveredStar = signal(0)
-  // - stars = [1, 2, 3, 4, 5]
-  // - ratingLabels = ['Poor', 'Fair', 'Good', 'Very Good', 'Excellent']
+  // Internal state
   hoveredStar = signal(0);
   stars = [1, 2, 3, 4, 5];
   ratingLabels = ['Poor', 'Fair', 'Good', 'Very Good', 'Excellent'];
 
-  // TODO 1c: Implement selectStar(star: number)
-  // Check !disabled(), then set value.set(star)
   selectStar(star: number) {
-    // Add implementation here
+    if (!this.disabled()) {
+      this.value.set(star);
+    }
   }
 }
 
@@ -187,24 +159,24 @@ export class StarRatingComponent implements FormValueControl<number> {
   `]
 })
 export class QuantitySelectorComponent implements FormValueControl<number> {
-  // TODO 2a: Implement FormValueControl<number>
+  // FormValueControl implementation
   value = model<number>(1);
   disabled = input<boolean>(false);
 
-  // TODO 2b: Configuration inputs
+  // Configuration
   minValue = input<number>(1);
   maxValue = input<number>(99);
 
-  // TODO 2c: Implement increment()
-  // Check value() < maxValue(), then value.update(v => v + 1)
   increment() {
-    // Add implementation here
+    if (this.value() < this.maxValue()) {
+      this.value.update(v => v + 1);
+    }
   }
 
-  // TODO 2d: Implement decrement()
-  // Check value() > minValue(), then value.update(v => v - 1)
   decrement() {
-    // Add implementation here
+    if (this.value() > this.minValue()) {
+      this.value.update(v => v - 1);
+    }
   }
 }
 
@@ -424,16 +396,8 @@ export class MyControl implements FormValueControl&lt;T&gt; {{ '{' }}
   `]
 })
 export class CustomControlsComponent {
-  // TODO 3: Create review form model
-  // Fields: productName (string), rating (number), quantity (number),
-  //         reviewText (string), recommend (boolean)
-  protected readonly reviewModel = signal<{
-    productName: string;
-    rating: number;
-    quantity: number;
-    reviewText: string;
-    recommend: boolean;
-  }>({
+  // Form Model
+  protected readonly reviewModel = signal({
     productName: '',
     rating: 0,
     quantity: 1,
@@ -441,11 +405,25 @@ export class CustomControlsComponent {
     recommend: false
   });
 
-  // TODO 4: Add form validation
+  // Form with validation
   protected readonly reviewForm = form(this.reviewModel, (f) => {
+    required(f.productName);
+    required(f.rating);
+    min(f.rating, 1);
+    min(f.quantity, 1);
+    max(f.quantity, 10);
+    validate(f.reviewText, ({ value }) => {
+      const text = value();
+      if (text && text.length < 10) {
+        return { kind: 'minLength', message: 'Review must be at least 10 characters' };
+      }
+      if (text && text.length > 500) {
+        return { kind: 'maxLength', message: 'Review must be less than 500 characters' };
+      }
+      return undefined;
+    });
   });
 
-  // KEEP AS-IS:
   toggleRecommend() {
     this.reviewModel.update(m => ({ ...m, recommend: !m.recommend }));
   }

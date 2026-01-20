@@ -32,6 +32,11 @@ export const routes: Routes = [
     title: 'Signal Forms - Async & Submit'
   },
   {
+    path: '06-array-basic',
+    loadComponent: () => import('./exercises/06-array-basic/array-basic.componen.solution').then(m => m.ArrayBasicsComponent),
+    title: 'Signal Forms - Arrays'
+  },
+  {
     path: '**',
     redirectTo: '/01-basics'
   }

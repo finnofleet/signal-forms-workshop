@@ -25,8 +25,8 @@ interface NavItem {
 
       <div class="nav-links">
         @for (item of navItems; track item.path) {
-          <a 
-            [routerLink]="item.path" 
+          <a
+            [routerLink]="item.path"
             routerLinkActive="active"
             class="nav-item">
             <div class="nav-item-header">
@@ -214,6 +214,13 @@ export class NavigationComponent {
       badge: '05',
       badgeClass: 'async',
       description: 'Async validation, submit(), httpResource'
+    },
+    {
+      path: '/06-array-basic',
+      label: 'Signal Forms - Arrays',
+      badge: '06',
+      badgeClass: 'async',
+      description: 'Signal Forms - Arrays'
     }
   ];
 }

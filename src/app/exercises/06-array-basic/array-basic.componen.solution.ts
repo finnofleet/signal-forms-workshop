@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { form, FormField, required, min, applyEach } from '@angular/forms/signals';
-import {CurrencyPipe} from '@angular/common';
+import { CurrencyPipe } from '@angular/common';
 
 @Component({
   selector: 'app-array-basics',
@@ -67,7 +67,6 @@ import {CurrencyPipe} from '@angular/common';
                     class="form-control"
                     [class.error]="item.quantity().touched() && item.quantity().invalid()"
                     [formField]="item.quantity"
-                    min="1"
                   />
                   @if (item.quantity().touched() && item.quantity().invalid()) {
                     <div class="field-error">Min quantity is 1</div>
@@ -81,11 +80,10 @@ import {CurrencyPipe} from '@angular/common';
                     class="form-control"
                     [class.error]="item.price().touched() && item.price().invalid()"
                     [formField]="item.price"
-                    min="0"
                     step="0.01"
                   />
                   @if (item.price().touched() && item.price().invalid()) {
-                    <div class="field-error">Price must be positive</div>
+                    <div class="field-error">Price must be min 10</div>
                   }
                 </div>
               </div>
@@ -203,7 +201,7 @@ export class ArrayBasicsComponent {
   protected readonly orderModel = signal({
     customerName: '',
     items: [
-      { id: 0, product: '', quantity: 1, price: 0 }
+      { id: crypto.randomUUID(), product: '', quantity: 1, price: 0 }
     ]
   });
 
@@ -215,7 +213,7 @@ export class ArrayBasicsComponent {
     applyEach(f.items, (item) => {
       required(item.product);
       min(item.quantity, 1);
-      min(item.price, 0);
+      min(item.price, 10);
     });
   });
 
@@ -252,7 +250,7 @@ export class ArrayBasicsComponent {
       value: this.orderForm().value(),
       valid: this.orderForm().valid(),
       itemsCount: this.orderForm.items.length,
-      items: this.orderModel().items.map((item, i) => ({
+      items: this.orderModel().items.map((_, i) => ({
         product: this.orderForm.items[i].product().value(),
         productValid: this.orderForm.items[i].product().valid(),
         quantity: this.orderForm.items[i].quantity().value(),
