@@ -221,6 +221,34 @@ export class NavigationComponent {
       badge: '06',
       badgeClass: 'async',
       description: 'Signal Forms - Arrays'
+    },
+    {
+      path: '/07-model-design',
+      label: 'Model Design',
+      badge: '07',
+      badgeClass: 'schemas',
+      description: 'Domain ↔ form model, linkedSignal, rxResource'
+    },
+    {
+      path: '/08-submit-formroot',
+      label: 'Submit & FormRoot',
+      badge: '08',
+      badgeClass: 'validation',
+      description: 'submit() options, errorSummary, FormRoot directive'
+    },
+    {
+      path: '/09-subforms',
+      label: 'Subforms',
+      badge: '09',
+      badgeClass: 'controls',
+      description: 'FieldTree, child components, schema()'
+    },
+    {
+      path: '/10-transformed-value',
+      label: 'Transformed Value',
+      badge: '10',
+      badgeClass: 'async',
+      description: 'transformedValue(), parse/format, custom controls'
     }
   ];
 }

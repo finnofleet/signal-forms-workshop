@@ -37,6 +37,26 @@ export const routes: Routes = [
     title: 'Signal Forms - Arrays'
   },
   {
+    path: '07-model-design',
+    loadComponent: () => import('./exercises/07-model-design/model-design.component').then(m => m.ModelDesignComponent),
+    title: 'Signal Forms - Model Design'
+  },
+  {
+    path: '08-submit-formroot',
+    loadComponent: () => import('./exercises/08-submit-formroot/submit-formroot.component').then(m => m.SubmitFormrootComponent),
+    title: 'Signal Forms - Submit & FormRoot'
+  },
+  {
+    path: '09-subforms',
+    loadComponent: () => import('./exercises/09-subforms/subforms.component').then(m => m.SubformsComponent),
+    title: 'Signal Forms - Subforms'
+  },
+  {
+    path: '10-transformed-value',
+    loadComponent: () => import('./exercises/10-transformed-value/transformed-value.component').then(m => m.TransformedValueComponent),
+    title: 'Signal Forms - Transformed Value'
+  },
+  {
     path: '**',
     redirectTo: '/01-basics'
   }
