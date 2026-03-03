@@ -25,10 +25,7 @@ import { Component, signal, computed } from '@angular/core';
 import { form, FormField, required, email, minLength, pattern, schema, apply, applyWhen } from '@angular/forms/signals';
 
 // TODO 1a: Create reusable addressSchema
-// Type: { street, city, postalCode, country } - all strings
-// Validation:
-// - all fields required (with custom message)
-// - postalCode: pattern /^\d{2}-\d{3}$/ (format XX-XXX)
+// Look at the shipping address section in the template to see which fields need validation
 const addressSchema = schema<{
   street: string;
   city: string;
@@ -39,10 +36,7 @@ const addressSchema = schema<{
 });
 
 // TODO 1b: Create contactSchema
-// Type: { email, phone } - both strings
-// Validation:
-// - email: required + email
-// - phone: pattern /^\d{9}$/ (exactly 9 digits)
+// Look at the contact section in the template to see which fields and error messages are expected
 const contactSchema = schema<{
   email: string;
   phone: string;
@@ -57,7 +51,7 @@ const contactSchema = schema<{
   template: `
     <div class="exercise-container">
       <header class="exercise-header">
-        <h1>03 - Schemas & Conditional Logic</h1>
+        <h1>06 - Schemas & Conditional Logic</h1>
         <p class="subtitle">Reusable validation schemas, applyWhen, disabled/hidden fields</p>
       </header>
 
@@ -469,18 +463,11 @@ export class SchemasComponent {
   // TODO 3: Create form with schemas and conditional validation
   protected readonly orderForm = form(this.orderModel, (f) => {
     // TODO 3a: Apply contactSchema to f.contact
-    // Use apply(f.contact, contactSchema)
 
-    // TODO 3b: Conditional validation for business fields
-    // Use applyWhen(f, condition, schema)
-    // Condition: ({ valueOf }) => valueOf(f.customerType) === 'business'
-    // Schema: required(form.companyName), required(form.taxId),
-    //         pattern(form.taxId, /^\d{2}-\d{3}-\d{2}-\d{2}$/)
+    // TODO 3b: When customerType is 'business', validate company fields
     // Hint: See "Conditional Validation with applyWhen" section
 
-    // TODO 3c: Conditional validation for shipping address
-    // applyWhen when deliveryType === 'shipping'
-    // In schema use apply(form.shippingAddress, addressSchema)
+    // TODO 3c: When deliveryType is 'shipping', validate the shipping address
   });
 
   // KEEP AS-IS:

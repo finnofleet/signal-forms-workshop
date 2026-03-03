@@ -9,7 +9,7 @@ import { CurrencyPipe } from '@angular/common';
   template: `
     <div class="exercise-container">
       <header class="exercise-header">
-        <h1>02 - Dynamic Arrays</h1>
+        <h1>08 - Dynamic Arrays</h1>
         <p class="subtitle">Learn applyEach() and array manipulation</p>
       </header>
 

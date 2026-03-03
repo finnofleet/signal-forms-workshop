@@ -33,7 +33,7 @@ import { firstValueFrom } from 'rxjs';
   template: `
     <div class="exercise-container">
       <header class="exercise-header">
-        <h1>05 - Async Validation & Submit</h1>
+        <h1>04 - Async Validation & Submit</h1>
         <p class="subtitle">Real API integration, debounce, submit() with server errors</p>
       </header>
 
@@ -360,12 +360,8 @@ export class AsyncSubmitComponent {
   protected readonly successMessage = signal<string | null>(null);
   protected readonly errorMessage = signal<string | null>(null);
 
-  // TODO 1: Create form model
-  protected readonly regModel = signal<{
-    username: string;
-    email: string;
-    password: string;
-  }>({
+  // TODO 1: Create form model — look at the template to see which fields are needed
+  protected readonly regModel = signal({
     username: '',
     email: '',
     password: ''
@@ -373,30 +369,16 @@ export class AsyncSubmitComponent {
 
   // TODO 2: Create form with async validation
   protected readonly regForm = form(this.regModel, (f) => {
-    // TODO 2a: Basic username validation
-    // - required(f.username)
-    // - minLength(f.username, 3)
-    // - debounce(f.username, 400) - delay before async check
+    // TODO 2a: Username — add built-in validators and debounce before async check
 
-    // TODO 2b: Async username validation with validateHttp()
-    // validateHttp(f.username, {
-    //   request: ({ value }) => {
-    //     Return URL: `${this.API_BASE}/api/auth/check-username?username=${encodeURIComponent(value())}`
-    //   },
-    //   onSuccess: (response) => {
-    //     If !response.available, return { kind: 'taken', message: response.message }
-    //     Save response.suggestions to this.usernameSuggestions
-    //     Otherwise clear suggestions and return null (valid)
-    //   },
-    //   onError: () => ({
-    //     Return { kind: 'error', message: 'Could not check...' }
-    //   })
-    // })
-    // Hint: See "Async Validation" section
+    // TODO 2b: Async username validation — use validateHttp() to check availability
+    // API URL: ${this.API_BASE}/api/auth/check-username?username=...
+    // Response: { available: boolean, suggestions?: string[] }
+    // Hint: See "Async Validation Pattern" section
 
-    // TODO 2c: Email - required + email
+    // TODO 2c: Email validation
 
-    // TODO 2d: Password - required + minLength(8)
+    // TODO 2d: Password validation
   });
 
   useSuggestion(suggestion: string) {
@@ -404,34 +386,14 @@ export class AsyncSubmitComponent {
   }
 
   // TODO 3: Implement submit with server error handling
+  // Use submit() to wrap the API call. Inside:
+  // - Call this.api.register() with form values (use firstValueFrom to convert Observable)
+  // - On success: set successMessage
+  // - On server validation errors: map them to form errors with { kind, path, message }
+  // - On network error: set errorMessage
+  // Hint: See "submit() with ApiService" section
   async onSubmit() {
     this.successMessage.set(null);
     this.errorMessage.set(null);
-
-    await submit(this.regForm, async (formTree) => {
-      try {
-        const response = await firstValueFrom(
-          this.api.register(formTree().value())
-        );
-
-        if (response.success) {
-          this.successMessage.set('Registration successful! Welcome to the app.');
-          return null;
-        }
-
-        if (response.errors && Array.isArray(response.errors)) {
-          return response.errors.map(err => ({
-            kind: err.code.toLowerCase(),
-            path: err.field,
-            message: err.message
-          }));
-        }
-
-        return null;
-      } catch (error) {
-        this.errorMessage.set('An error occurred during registration. Please try again.');
-        return null;
-      }
-    });
   }
 }

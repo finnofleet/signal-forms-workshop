@@ -1,0 +1,233 @@
+<div class="exercise-container">
+  <header class="exercise-header">
+    <h1>05 - Submit & FormRoot</h1>
+    <p class="subtitle">Advanced submit(), error summary, FormRoot directive</p>
+  </header>
+
+  <div class="alert alert-info">
+    <strong>🎯 Learning Goals:</strong>
+    <ul>
+      <li>Use <code>submit()</code> with options object</li>
+      <li>Collect errors with <code>errorSummary()</code></li>
+      <li>Auto-focus invalid fields with <code>focusBoundControl()</code></li>
+      <li>Use <code>[formRoot]</code> for declarative submit</li>
+      <li>Show <code>submitting()</code> loading state</li>
+      <li>Use <code>reset()</code> after success</li>
+    </ul>
+  </div>
+
+  @if (formErrors().length > 0) {
+    <div class="alert alert-error">
+      <strong>❌ Please fix the following errors:</strong>
+      <ul>
+        @for (err of formErrors(); track $index) {
+          <li>{{ err.message || err.kind }}</li>
+        }
+      </ul>
+    </div>
+  }
+
+  @if (successMessage()) {
+    <div class="alert alert-success">
+      <strong>🎉 Success!</strong> {{ successMessage() }}
+    </div>
+  }
+
+  <section class="exercise-section">
+    <h3>📝 Contact Form</h3>
+
+    <!-- TODO 1: Replace manual (submit) with the [formRoot] directive -->
+    <!-- See the "FormRoot" hint section for the syntax -->
+    <form (submit)="onSubmit()">
+      <div class="form-group">
+        <label for="name">Name</label>
+        <input
+          id="name"
+          type="text"
+          class="form-control"
+          [class.error]="contactForm.name().touched() && contactForm.name().invalid()"
+          [formField]="contactForm.name"
+          placeholder="Your name"
+        />
+        @if (contactForm.name().touched() && contactForm.name().invalid()) {
+          @for (err of contactForm.name().errors(); track err.kind) {
+            <div class="field-error">
+              @switch (err.kind) {
+                @case ('required') { Name is required }
+                @default { {{ err.message || 'Invalid' }} }
+              }
+            </div>
+          }
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input
+          id="email"
+          type="email"
+          class="form-control"
+          [class.error]="contactForm.email().touched() && contactForm.email().invalid()"
+          [formField]="contactForm.email"
+          placeholder="your@email.com"
+        />
+        @if (contactForm.email().touched() && contactForm.email().invalid()) {
+          @for (err of contactForm.email().errors(); track err.kind) {
+            <div class="field-error">
+              @switch (err.kind) {
+                @case ('required') { Email is required }
+                @case ('email') { Please enter a valid email }
+                @default { {{ err.message || 'Invalid' }} }
+              }
+            </div>
+          }
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="subject">Subject</label>
+        <input
+          id="subject"
+          type="text"
+          class="form-control"
+          [class.error]="contactForm.subject().touched() && contactForm.subject().invalid()"
+          [formField]="contactForm.subject"
+          placeholder="What is this about?"
+        />
+        @if (contactForm.subject().touched() && contactForm.subject().invalid()) {
+          @for (err of contactForm.subject().errors(); track err.kind) {
+            <div class="field-error">
+              @switch (err.kind) {
+                @case ('required') { Subject is required }
+                @case ('minLength') { Subject must be at least 5 characters }
+                @default { {{ err.message || 'Invalid' }} }
+              }
+            </div>
+          }
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="message">Message</label>
+        <textarea
+          id="message"
+          class="form-control"
+          rows="4"
+          [class.error]="contactForm.message().touched() && contactForm.message().invalid()"
+          [formField]="contactForm.message"
+          placeholder="Your message..."
+        ></textarea>
+        @if (contactForm.message().touched() && contactForm.message().invalid()) {
+          @for (err of contactForm.message().errors(); track err.kind) {
+            <div class="field-error">
+              @switch (err.kind) {
+                @case ('required') { Message is required }
+                @case ('minLength') { Message must be at least 20 characters }
+                @default { {{ err.message || 'Invalid' }} }
+              }
+            </div>
+          }
+        }
+      </div>
+
+      <div class="form-group">
+        <label for="priority">Priority</label>
+        <select
+          id="priority"
+          class="form-control"
+          [formField]="contactForm.priority"
+        >
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+        </select>
+      </div>
+
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="contactForm().submitting()">
+        @if (contactForm().submitting()) {
+          <span class="loading-spinner"></span>
+          Sending...
+        } @else {
+          Send Message
+        }
+      </button>
+    </form>
+  </section>
+
+  <section class="exercise-section">
+    <h3>🔍 Form State</h3>
+    <div class="state-grid">
+      <div class="state-item">
+        <span class="label">Valid</span>
+        <span class="value" [class.yes]="contactForm().valid()">{{ contactForm().valid() ? 'Yes' : 'No' }}</span>
+      </div>
+      <div class="state-item">
+        <span class="label">Touched</span>
+        <span class="value" [class.yes]="contactForm().touched()">{{ contactForm().touched() ? 'Yes' : 'No' }}</span>
+      </div>
+      <div class="state-item">
+        <span class="label">Submitting</span>
+        <span class="value" [class.yes]="contactForm().submitting()">{{ contactForm().submitting() ? 'Yes' : 'No' }}</span>
+      </div>
+      <div class="state-item">
+        <span class="label">Dirty</span>
+        <span class="value" [class.yes]="contactForm().dirty()">{{ contactForm().dirty() ? 'Yes' : 'No' }}</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="exercise-section">
+    <details class="hint-details">
+      <summary class="hint-summary">
+        <span class="hint-icon">💡</span>
+        <span>submit() with onInvalid + errorSummary (click to expand)</span>
+      </summary>
+      <div class="hint-content">
+        <pre class="code-block">// submit() handles validation before running action
+await submit(this.contactForm, &#123;
+  action: async (formTree) =&gt; &#123;
+    // Only runs if form is valid
+    await sendToApi(formTree().value());
+    // Reset model to clear form
+    this.contactModel.set(&#123; ...initialValues &#125;);
+    return null;
+  &#125;,
+  onInvalid: (formTree) =&gt; &#123;
+    // Collect errors from fields
+    const errors = [];
+    for (const field of ['name', 'email']) &#123;
+      if (formTree[field]().invalid())
+        errors.push(...formTree[field]().errors());
+    &#125;
+    this.formErrors.set(errors);
+  &#125;
+&#125;);</pre>
+      </div>
+    </details>
+  </section>
+
+  <section class="exercise-section">
+    <details class="hint-details">
+      <summary class="hint-summary">
+        <span class="hint-icon">💡</span>
+        <span>FormRoot directive pattern (click to expand)</span>
+      </summary>
+      <div class="hint-content">
+        <pre class="code-block">// Instead of manual (submit)="onSubmit()"
+// Use FormRoot for declarative submit:
+&lt;form [formRoot]="contactForm"
+      (formSubmit)="onFormSubmit()"&gt;
+  ...
+&lt;/form&gt;
+
+// FormRoot automatically:
+// - Prevents default form submit
+// - Calls submit() on your form
+// - Handles validation flow</pre>
+      </div>
+    </details>
+  </section>
+</div>

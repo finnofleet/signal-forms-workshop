@@ -32,7 +32,7 @@ const contactSchema = schema<{
   template: `
     <div class="exercise-container">
       <header class="exercise-header">
-        <h1>03 - Schemas & Conditional Logic</h1>
+        <h1>06 - Schemas & Conditional Logic</h1>
         <p class="subtitle">Reusable validation schemas, applyWhen, disabled/hidden fields</p>
       </header>
 

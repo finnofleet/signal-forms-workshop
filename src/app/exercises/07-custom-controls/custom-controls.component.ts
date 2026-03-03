@@ -1,31 +1,59 @@
-import { Component, signal, computed, input, model } from '@angular/core';
+/*
+ * ================================================================
+ * 🎯 EXERCISE GOAL: Custom Form Controls
+ * ================================================================
+ * You will learn:
+ * - How to implement FormValueControl<T> interface
+ * - Create custom controls with model() and input()
+ * - Integrate custom controls with [formField]
+ * - No more ControlValueAccessor boilerplate!
+ *
+ * The UI components (StarRating, QuantitySelector) are ALREADY BUILT.
+ * Your job: make them work with Signal Forms by implementing FormValueControl<T>.
+ *
+ * ✅ DONE WHEN:
+ * - StarRating component works with [formField]
+ * - QuantitySelector component works with [formField]
+ * - Rating validation shows errors
+ * - Form submits with all values
+ *
+ * ⏱️ TIME: 10-12 minutes
+ *
+ * 💡 HINT: Check "FormValueControl Interface" section below!
+ * ================================================================
+ */
+
+import { Component, signal, input, model } from '@angular/core';
 import { form, FormField, required, min, max, validate } from '@angular/forms/signals';
 import { FormValueControl } from '@angular/forms/signals';
 
 // ============================================
-// Custom Star Rating Component
+// StarRatingComponent — UI is ready!
+// TODO 1: Make it a FormValueControl<number>
 // ============================================
+// Currently this component uses a local signal for its value.
+// Transform it so [formField] can bind to it.
+
 @Component({
   selector: 'app-star-rating',
   standalone: true,
   template: `
-    <div class="star-rating" [class.disabled]="disabled()">
+    <div class="star-rating">
       @for (star of stars; track star) {
         <button
           type="button"
           class="star-btn"
-          [class.filled]="star <= (hoveredStar() || value())"
+          [class.filled]="star <= (hoveredStar() || currentValue())"
           [class.hovered]="star <= hoveredStar()"
-          [disabled]="disabled()"
           (click)="selectStar(star)"
           (mouseenter)="hoveredStar.set(star)"
           (mouseleave)="hoveredStar.set(0)"
           [attr.aria-label]="'Rate ' + star + ' out of 5'">
-          {{ star <= (hoveredStar() || value()) ? '★' : '☆' }}
+          {{ star <= (hoveredStar() || currentValue()) ? '★' : '☆' }}
         </button>
       }
-      @if (value() > 0) {
-        <span class="rating-text">{{ ratingLabels[value() - 1] }}</span>
+      @if (currentValue() > 0) {
+        <span class="rating-text">{{ ratingLabels[currentValue() - 1] }}</span>
       }
     </div>
   `,
@@ -34,11 +62,6 @@ import { FormValueControl } from '@angular/forms/signals';
       display: flex;
       align-items: center;
       gap: 0.25rem;
-
-      &.disabled {
-        opacity: 0.5;
-        pointer-events: none;
-      }
     }
 
     .star-btn {
@@ -71,43 +94,44 @@ import { FormValueControl } from '@angular/forms/signals';
     }
   `]
 })
-export class StarRatingComponent implements FormValueControl<number> {
-  // FormValueControl implementation
-  value = model<number>(0);
-  disabled = input<boolean>(false);
+export class StarRatingComponent {
+  // TODO 1: Make this component implement FormValueControl<number>
+  // Currently it uses a plain signal — it needs to satisfy the FormValueControl interface
+  // so that [formField] can bind to it. See the hint section for the interface definition.
+  protected readonly currentValue = signal(0);
 
-  // Internal state
+  // Internal state (keep as-is)
   hoveredStar = signal(0);
   stars = [1, 2, 3, 4, 5];
   ratingLabels = ['Poor', 'Fair', 'Good', 'Very Good', 'Excellent'];
 
   selectStar(star: number) {
-    if (!this.disabled()) {
-      this.value.set(star);
-    }
+    this.currentValue.set(star);
   }
 }
 
 // ============================================
-// Custom Quantity Selector Component
+// QuantitySelectorComponent — UI is ready!
+// TODO 2: Make it a FormValueControl<number>
 // ============================================
+
 @Component({
   selector: 'app-quantity-selector',
   standalone: true,
   template: `
-    <div class="quantity-selector" [class.disabled]="disabled()">
+    <div class="quantity-selector">
       <button
         type="button"
         class="qty-btn minus"
-        [disabled]="disabled() || value() <= minValue()"
+        [disabled]="currentValue() <= minVal()"
         (click)="decrement()">
         −
       </button>
-      <span class="qty-value">{{ value() }}</span>
+      <span class="qty-value">{{ currentValue() }}</span>
       <button
         type="button"
         class="qty-btn plus"
-        [disabled]="disabled() || value() >= maxValue()"
+        [disabled]="currentValue() >= maxVal()"
         (click)="increment()">
         +
       </button>
@@ -120,10 +144,6 @@ export class StarRatingComponent implements FormValueControl<number> {
       border: 2px solid #e4e7eb;
       border-radius: 8px;
       overflow: hidden;
-
-      &.disabled {
-        opacity: 0.5;
-      }
     }
 
     .qty-btn {
@@ -158,24 +178,23 @@ export class StarRatingComponent implements FormValueControl<number> {
     }
   `]
 })
-export class QuantitySelectorComponent implements FormValueControl<number> {
-  // FormValueControl implementation
-  value = model<number>(1);
-  disabled = input<boolean>(false);
+export class QuantitySelectorComponent {
+  // TODO 2: Same as StarRating — make this implement FormValueControl<number>
+  protected readonly currentValue = signal(1);
 
-  // Configuration
-  minValue = input<number>(1);
-  maxValue = input<number>(99);
+  // Configuration inputs (keep as-is)
+  minVal = input<number>(1);
+  maxVal = input<number>(99);
 
   increment() {
-    if (this.value() < this.maxValue()) {
-      this.value.update(v => v + 1);
+    if (this.currentValue() < this.maxVal()) {
+      this.currentValue.update(v => v + 1);
     }
   }
 
   decrement() {
-    if (this.value() > this.minValue()) {
-      this.value.update(v => v - 1);
+    if (this.currentValue() > this.minVal()) {
+      this.currentValue.update(v => v - 1);
     }
   }
 }
@@ -190,7 +209,7 @@ export class QuantitySelectorComponent implements FormValueControl<number> {
   template: `
     <div class="exercise-container">
       <header class="exercise-header">
-        <h1>04 - Custom Form Controls</h1>
+        <h1>07 - Custom Form Controls</h1>
         <p class="subtitle">FormValueControl interface - goodbye ControlValueAccessor!</p>
       </header>
 
@@ -202,6 +221,12 @@ export class QuantitySelectorComponent implements FormValueControl<number> {
           <li>Integrate custom controls with <code>[formField]</code></li>
           <li>No more ControlValueAccessor boilerplate!</li>
         </ul>
+      </div>
+
+      <div class="alert alert-warning">
+        <strong>📌 Instructions:</strong>
+        The <code>StarRating</code> and <code>QuantitySelector</code> components already work as standalone UI.
+        Your job: add <code>implements FormValueControl&lt;number&gt;</code> so they work with <code>[formField]</code>.
       </div>
 
       <section class="exercise-section">
@@ -221,7 +246,9 @@ export class QuantitySelectorComponent implements FormValueControl<number> {
 
           <div class="form-group">
             <label>Your Rating</label>
-            <app-star-rating [formField]="reviewForm.rating" />
+            <!-- TODO 3: Once StarRating implements FormValueControl, uncomment [formField] -->
+            <app-star-rating />
+            <!--<app-star-rating [formField]="reviewForm.rating" />-->
             @if (reviewForm.rating().touched() && reviewForm.rating().invalid()) {
               @for (err of reviewForm.rating().errors(); track err.kind) {
                 <div class="field-error">
@@ -236,11 +263,9 @@ export class QuantitySelectorComponent implements FormValueControl<number> {
 
           <div class="form-group">
             <label>Quantity Purchased</label>
-            <app-quantity-selector
-              [formField]="reviewForm.quantity"
-              [minValue]="1"
-              [maxValue]="10"
-            />
+            <!-- TODO 4: Once QuantitySelector implements FormValueControl, uncomment [formField] -->
+            <app-quantity-selector />
+            <!--<app-quantity-selector [formField]="reviewForm.quantity" [minVal]="1" [maxVal]="10" />-->
           </div>
 
           <div class="form-group">
@@ -307,7 +332,6 @@ export class QuantitySelectorComponent implements FormValueControl<number> {
 interface FormValueControl&lt;T&gt; {{ '{' }}
   value: ModelSignal&lt;T&gt;;      // REQUIRED
   disabled?: InputSignal&lt;boolean&gt;;  // optional
-  // ... other optional inputs
 {{ '}' }}
 
 // Implementation:
@@ -393,6 +417,23 @@ export class MyControl implements FormValueControl&lt;T&gt; {{ '{' }}
       color: #6c757d;
       margin: 0.5rem 0 0 0;
     }
+
+    .checkbox-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+
+      input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+      }
+
+      span {
+        user-select: none;
+      }
+    }
   `]
 })
 export class CustomControlsComponent {
@@ -405,23 +446,10 @@ export class CustomControlsComponent {
     recommend: false
   });
 
-  // Form with validation
+  // TODO 5: Create form with validation
+  // Look at the template to see which fields need validation and what error kinds are expected
   protected readonly reviewForm = form(this.reviewModel, (f) => {
-    required(f.productName);
-    required(f.rating);
-    min(f.rating, 1);
-    min(f.quantity, 1);
-    max(f.quantity, 10);
-    validate(f.reviewText, ({ value }) => {
-      const text = value();
-      if (text && text.length < 10) {
-        return { kind: 'minLength', message: 'Review must be at least 10 characters' };
-      }
-      if (text && text.length > 500) {
-        return { kind: 'maxLength', message: 'Review must be less than 500 characters' };
-      }
-      return undefined;
-    });
+    // Add validation here
   });
 
   toggleRecommend() {

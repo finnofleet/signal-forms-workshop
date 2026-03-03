@@ -1,0 +1,118 @@
+<div class="exercise-container">
+  <header class="exercise-header">
+    <h1>09 - Subforms with FieldTree</h1>
+    <p class="subtitle">Split forms across child components with shared state</p>
+  </header>
+
+  <div class="alert alert-info">
+    <strong>🎯 Learning Goals:</strong>
+    <ul>
+      <li>Pass <code>FieldTree&lt;T&gt;</code> as <code>input()</code> to children</li>
+      <li>Single form state across multiple components</li>
+      <li>Validation in parent, UI in children</li>
+      <li>Use <code>schema()</code> for section validation</li>
+    </ul>
+  </div>
+
+  <section class="exercise-section">
+    <h3>📝 Flight Booking</h3>
+
+    <form (submit)="onSubmit()">
+      <!-- TODO 4: Pass FieldTree portions to child components -->
+      <!-- <app-passenger-form [passenger]="bookingForm.passenger" /> -->
+      <!-- <app-flight-form [flight]="bookingForm.flight" /> -->
+      <!-- <app-payment-form [payment]="bookingForm.payment" /> -->
+
+      <app-passenger-form [passenger]="bookingForm.passenger" />
+      <app-flight-form [flight]="bookingForm.flight" />
+      <app-payment-form [payment]="bookingForm.payment" />
+
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="bookingForm().invalid() || bookingForm().submitting()">
+        @if (bookingForm().submitting()) {
+          <span class="loading-spinner"></span>
+          Booking...
+        } @else {
+          Book Flight
+        }
+      </button>
+    </form>
+  </section>
+
+  @if (successMessage()) {
+    <div class="alert alert-success">
+      <strong>🎉 Success!</strong> {{ successMessage() }}
+    </div>
+  }
+
+  <section class="exercise-section">
+    <h3>🔍 Complete Form State</h3>
+    <pre class="code-block">{{ bookingForm().value() | json }}</pre>
+    <div class="state-grid">
+      <div class="state-item">
+        <span class="label">Valid</span>
+        <span class="value" [class.yes]="bookingForm().valid()">{{ bookingForm().valid() ? 'Yes' : 'No' }}</span>
+      </div>
+      <div class="state-item">
+        <span class="label">Touched</span>
+        <span class="value" [class.yes]="bookingForm().touched()">{{ bookingForm().touched() ? 'Yes' : 'No' }}</span>
+      </div>
+      <div class="state-item">
+        <span class="label">Dirty</span>
+        <span class="value" [class.yes]="bookingForm().dirty()">{{ bookingForm().dirty() ? 'Yes' : 'No' }}</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="exercise-section">
+    <details class="hint-details">
+      <summary class="hint-summary">
+        <span class="hint-icon">💡</span>
+        <span>FieldTree input pattern (click to expand)</span>
+      </summary>
+      <div class="hint-content">
+        <pre class="code-block">// Child component receives a portion of the form tree
+&#64;Component(&#123; ... &#125;)
+export class PassengerFormComponent &#123;
+  readonly passenger = input.required&lt;
+    FieldTree&lt;BookingFormModel['passenger']&gt;
+  &gt;();
+&#125;
+
+// Parent passes it:
+&lt;app-passenger-form
+  [passenger]="bookingForm.passenger" /&gt;
+
+// Child binds fields:
+&lt;input [formField]="passenger().firstName" /&gt;</pre>
+      </div>
+    </details>
+  </section>
+
+  <section class="exercise-section">
+    <details class="hint-details">
+      <summary class="hint-summary">
+        <span class="hint-icon">💡</span>
+        <span>schema() for section validation (click to expand)</span>
+      </summary>
+      <div class="hint-content">
+        <pre class="code-block">// Define reusable schemas per section
+const passengerSchema = schema&lt;BookingFormModel['passenger']&gt;((f) =&gt; &#123;
+  required(f.firstName);
+  required(f.lastName);
+  required(f.email);
+  email(f.email);
+&#125;);
+
+// Apply in parent form
+bookingForm = form(this.model, (f) =&gt; &#123;
+  apply(f.passenger, passengerSchema);
+  apply(f.flight, flightSchema);
+  apply(f.payment, paymentSchema);
+&#125;);</pre>
+      </div>
+    </details>
+  </section>
+</div>

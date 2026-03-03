@@ -180,6 +180,7 @@ interface NavItem {
 })
 export class NavigationComponent {
   navItems: NavItem[] = [
+    // Module 1: Foundations
     {
       path: '/01-basics',
       label: 'Basics',
@@ -187,54 +188,57 @@ export class NavigationComponent {
       badgeClass: 'basics',
       description: 'form(), [formField], Field State'
     },
+    // Module 2: Form Model Design
     {
-      path: '/02-validation',
-      label: 'Validation',
+      path: '/02-model-design',
+      label: 'Model Design',
       badge: '02',
+      badgeClass: 'schemas',
+      description: 'Domain ↔ form model, linkedSignal, rxResource'
+    },
+    // Module 3: Validation Deep Dive
+    {
+      path: '/03-validation',
+      label: 'Validation',
+      badge: '03',
       badgeClass: 'validation',
       description: 'Built-in, custom, cross-field validators'
     },
     {
-      path: '/03-schemas',
-      label: 'Schemas',
-      badge: '03',
-      badgeClass: 'schemas',
-      description: 'Reusable schemas, conditional logic'
-    },
-    {
-      path: '/04-custom-controls',
-      label: 'Custom Controls',
-      badge: '04',
-      badgeClass: 'controls',
-      description: 'FormValueControl, FormCheckboxControl'
-    },
-    {
-      path: '/05-async-submit',
+      path: '/04-async-submit',
       label: 'Async & Submit',
-      badge: '05',
+      badge: '04',
       badgeClass: 'async',
       description: 'Async validation, submit(), httpResource'
     },
     {
-      path: '/06-array-basic',
-      label: 'Signal Forms - Arrays',
-      badge: '06',
-      badgeClass: 'async',
-      description: 'Signal Forms - Arrays'
-    },
-    {
-      path: '/07-model-design',
-      label: 'Model Design',
-      badge: '07',
-      badgeClass: 'schemas',
-      description: 'Domain ↔ form model, linkedSignal, rxResource'
-    },
-    {
-      path: '/08-submit-formroot',
+      path: '/05-submit-formroot',
       label: 'Submit & FormRoot',
+      badge: '05',
+      badgeClass: 'async',
+      description: 'submit() options, FormRoot directive'
+    },
+    // Module 4: Scalable Architectures
+    {
+      path: '/06-schemas',
+      label: 'Schemas',
+      badge: '06',
+      badgeClass: 'schemas',
+      description: 'Reusable schemas, conditional logic'
+    },
+    {
+      path: '/07-custom-controls',
+      label: 'Custom Controls',
+      badge: '07',
+      badgeClass: 'controls',
+      description: 'FormValueControl, FormCheckboxControl'
+    },
+    {
+      path: '/08-arrays',
+      label: 'Arrays',
       badge: '08',
-      badgeClass: 'validation',
-      description: 'submit() options, errorSummary, FormRoot directive'
+      badgeClass: 'controls',
+      description: 'Dynamic arrays, applyEach()'
     },
     {
       path: '/09-subforms',
@@ -242,13 +246,6 @@ export class NavigationComponent {
       badge: '09',
       badgeClass: 'controls',
       description: 'FieldTree, child components, schema()'
-    },
-    {
-      path: '/10-transformed-value',
-      label: 'Transformed Value',
-      badge: '10',
-      badgeClass: 'async',
-      description: 'transformedValue(), parse/format, custom controls'
     }
   ];
 }

@@ -99,7 +99,7 @@ export class StarRatingComponent implements FormValueControl<number> {
       <button
         type="button"
         class="qty-btn minus"
-        [disabled]="disabled() || value() <= minValue()"
+        [disabled]="disabled() || value() <= minVal()"
         (click)="decrement()">
         −
       </button>
@@ -107,7 +107,7 @@ export class StarRatingComponent implements FormValueControl<number> {
       <button
         type="button"
         class="qty-btn plus"
-        [disabled]="disabled() || value() >= maxValue()"
+        [disabled]="disabled() || value() >= maxVal()"
         (click)="increment()">
         +
       </button>
@@ -164,17 +164,17 @@ export class QuantitySelectorComponent implements FormValueControl<number> {
   disabled = input<boolean>(false);
 
   // Configuration
-  minValue = input<number>(1);
-  maxValue = input<number>(99);
+  minVal = input<number>(1);
+  maxVal = input<number>(99);
 
   increment() {
-    if (this.value() < this.maxValue()) {
+    if (this.value() < this.maxVal()) {
       this.value.update(v => v + 1);
     }
   }
 
   decrement() {
-    if (this.value() > this.minValue()) {
+    if (this.value() > this.minVal()) {
       this.value.update(v => v - 1);
     }
   }
@@ -190,7 +190,7 @@ export class QuantitySelectorComponent implements FormValueControl<number> {
   template: `
     <div class="exercise-container">
       <header class="exercise-header">
-        <h1>04 - Custom Form Controls</h1>
+        <h1>07 - Custom Form Controls</h1>
         <p class="subtitle">FormValueControl interface - goodbye ControlValueAccessor!</p>
       </header>
 
@@ -238,8 +238,8 @@ export class QuantitySelectorComponent implements FormValueControl<number> {
             <label>Quantity Purchased</label>
             <app-quantity-selector
               [formField]="reviewForm.quantity"
-              [minValue]="1"
-              [maxValue]="10"
+              [minVal]="1"
+              [maxVal]="10"
             />
           </div>
 

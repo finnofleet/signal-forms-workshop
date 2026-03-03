@@ -257,36 +257,24 @@ this.loginForm.email().errors()    // ValidationError[]</pre>
   `]
 })
 export class BasicsComponent {
-  // TODO 1: Create a form model with username, email, password, and rememberMe fields
-  // Use signal() and initialize: username and email with '', password with '', rememberMe with false
-  // PART B BONUS: Add username (string) and rememberMe (boolean) fields
-  protected readonly loginModel = signal<{
-    username: string;
-    email: string;
-    password: string;
-    rememberMe: boolean;
-  }>({
+  // Form model — already set up with signal()
+  // Notice how the form data structure matches the template fields
+  protected readonly loginModel = signal({
     username: '',
     email: '',
     password: '',
-    rememberMe: false
+    rememberMe: false,
   });
 
-  // TODO 2: Create form with validation
-  // PART A:
-  // - f.email: required() + email()
-  // - f.password: required()
-  // PART B - BONUS:
-  // - f.username: required() + minLength(3)
-  // - f.password: ADD minLength(6) (in addition to required)
-  // - f.rememberMe: no validation needed (boolean)
+  // TODO 2: Create form with validation using form(model, schemaFn)
+  // Look at the template to understand which fields need validation and what error kinds are expected
+  // PART B BONUS: add validation for the bonus fields too
   protected readonly loginForm = form(this.loginModel, (f) => {
     // Add validation here
   });
 
-  // TODO 3: Create a function that returns JSON.stringify of form information
-  // Use this.loginForm() to access form state
-  // Hint: JSON.stringify(object, null, 2) for nice formatting
+  // TODO 3: Return a debug string showing the current form state
+  // Explore what properties are available on this.loginForm() and its fields
   protected formDebugInfo = (): string => {
     return JSON.stringify({}, null, 2);
   };

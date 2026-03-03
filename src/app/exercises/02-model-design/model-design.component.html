@@ -1,0 +1,242 @@
+<div class="exercise-container">
+  <header class="exercise-header">
+    <h1>02 - Form Model Design</h1>
+    <p class="subtitle">Domain ↔ Form model separation, linkedSignal, httpResource</p>
+  </header>
+
+  <div class="alert alert-info">
+    <strong>🎯 Learning Goals:</strong>
+    <ul>
+      <li>Separate domain model (API) from form model (UI)</li>
+      <li>Use <code>linkedSignal</code> to derive form model from API data</li>
+      <li>Use <code>rxResource</code> to load user from API</li>
+      <li>Transform between models with helper functions</li>
+      <li>Use <code>disabled()</code> while data loads</li>
+    </ul>
+  </div>
+
+  <div class="alert alert-warning">
+    <strong>🌐 Live API:</strong> Loading user from
+    <code>GET /api/users/demo</code>
+  </div>
+
+  @if (userResource.isLoading()) {
+    <div class="loading-banner">
+      <span class="loading-spinner"></span>
+      Loading user profile...
+    </div>
+  }
+
+  <section class="exercise-section">
+    <h3>📝 User Profile Editor</h3>
+
+    <form [formRoot]="profileForm" (submit)="onSubmit()">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="displayName">Display Name</label>
+          <input
+            id="displayName"
+            type="text"
+            class="form-control"
+            [class.error]="profileForm.displayName().touched() && profileForm.displayName().invalid()"
+            [formField]="profileForm.displayName"
+            placeholder="Your display name"
+          />
+          @if (profileForm.displayName().touched() && profileForm.displayName().invalid()) {
+            @for (err of profileForm.displayName().errors(); track err.kind) {
+              <div class="field-error">
+                @switch (err.kind) {
+                  @case ('required') { Display name is required }
+                  @default { {{ err.message || 'Invalid' }} }
+                }
+              </div>
+            }
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input
+            id="email"
+            type="email"
+            class="form-control"
+            [class.error]="profileForm.email().touched() && profileForm.email().invalid()"
+            [formField]="profileForm.email"
+            placeholder="your@email.com"
+          />
+          @if (profileForm.email().touched() && profileForm.email().invalid()) {
+            @for (err of profileForm.email().errors(); track err.kind) {
+              <div class="field-error">
+                @switch (err.kind) {
+                  @case ('required') { Email is required }
+                  @case ('email') { Please enter a valid email }
+                  @default { {{ err.message || 'Invalid' }} }
+                }
+              </div>
+            }
+          }
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Phone</label>
+        <input
+          id="phone"
+          type="tel"
+          class="form-control"
+          [formField]="profileForm.phone"
+          placeholder="+1 234 567 890"
+        />
+      </div>
+
+      <h4>Address</h4>
+
+      <div class="form-group">
+        <label for="street">Street</label>
+        <input
+          id="street"
+          type="text"
+          class="form-control"
+          [formField]="profileForm.street"
+          placeholder="123 Main St"
+        />
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="city">City</label>
+          <input
+            id="city"
+            type="text"
+            class="form-control"
+            [formField]="profileForm.city"
+            placeholder="New York"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="postalCode">Postal Code</label>
+          <input
+            id="postalCode"
+            type="text"
+            class="form-control"
+            [formField]="profileForm.postalCode"
+            placeholder="10001"
+          />
+        </div>
+      </div>
+
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="profileForm().invalid() || profileForm().submitting() || userResource.isLoading()">
+        @if (profileForm().submitting()) {
+          <span class="loading-spinner"></span>
+          Saving...
+        } @else {
+          Save Profile
+        }
+      </button>
+    </form>
+  </section>
+
+  @if (successMessage()) {
+    <div class="alert alert-success">
+      <strong>🎉 Success!</strong> {{ successMessage() }}
+    </div>
+  }
+
+  @if (errorMessage()) {
+    <div class="alert alert-error">
+      <strong>❌ Error:</strong> {{ errorMessage() }}
+    </div>
+  }
+
+  <section class="exercise-section">
+    <h3>🔍 Debug Info</h3>
+    <div class="debug-grid">
+      <div class="debug-card">
+        <h4>Domain Model (API)</h4>
+        <pre class="code-block">{{ userResource.value() | json }}</pre>
+      </div>
+      <div class="debug-card">
+        <h4>Form Model (UI)</h4>
+        <pre class="code-block">{{ profileForm().value() | json }}</pre>
+      </div>
+    </div>
+    <div class="state-grid">
+      <div class="state-item">
+        <span class="label">Valid</span>
+        <span class="value" [class.yes]="profileForm().valid()">{{ profileForm().valid() ? 'Yes' : 'No' }}</span>
+      </div>
+      <div class="state-item">
+        <span class="label">Dirty</span>
+        <span class="value" [class.yes]="profileForm().dirty()">{{ profileForm().dirty() ? 'Yes' : 'No' }}</span>
+      </div>
+      <div class="state-item">
+        <span class="label">Loading</span>
+        <span class="value" [class.yes]="userResource.isLoading()">{{ userResource.isLoading() ? 'Yes' : 'No' }}</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="exercise-section">
+    <details class="hint-details">
+      <summary class="hint-summary">
+        <span class="hint-icon">💡</span>
+        <span>domainToForm / formToDomain pattern (click to expand)</span>
+      </summary>
+      <div class="hint-content">
+        <pre class="code-block">// Domain → Form: flatten nested objects
+function domainToForm(user: User): UserFormModel &#123;
+  return &#123;
+    displayName: user.name,
+    email: user.email,
+    phone: user.phone ?? '',
+    street: user.address?.street ?? '',
+    city: user.address?.city ?? '',
+    postalCode: user.address?.postalCode ?? '',
+  &#125;;
+&#125;
+
+// Form → Domain: re-nest flat fields
+function formToDomain(form: UserFormModel): Partial&lt;User&gt; &#123;
+  return &#123;
+    name: form.displayName,
+    email: form.email,
+    phone: form.phone,
+    address: &#123;
+      street: form.street,
+      city: form.city,
+      postalCode: form.postalCode,
+    &#125;
+  &#125;;
+&#125;</pre>
+      </div>
+    </details>
+  </section>
+
+  <section class="exercise-section">
+    <details class="hint-details">
+      <summary class="hint-summary">
+        <span class="hint-icon">💡</span>
+        <span>linkedSignal + rxResource pattern (click to expand)</span>
+      </summary>
+      <div class="hint-content">
+        <pre class="code-block">// Load from API
+userResource = rxResource(&#123;
+  stream: () =&gt; this.api.getUser('demo')
+&#125;);
+
+// Derive form model from resource
+formModel = linkedSignal(() =&gt; &#123;
+  const user = this.userResource.value();
+  return user ? domainToForm(user) : EMPTY_FORM;
+&#125;);
+
+// Disable form while loading
+disabled(f, () =&gt; this.userResource.isLoading());</pre>
+      </div>
+    </details>
+  </section>
+</div>

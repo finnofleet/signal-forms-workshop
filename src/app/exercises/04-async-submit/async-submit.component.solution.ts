@@ -10,7 +10,7 @@ import { firstValueFrom } from 'rxjs';
   template: `
     <div class="exercise-container">
       <header class="exercise-header">
-        <h1>05 - Async Validation & Submit</h1>
+        <h1>04 - Async Validation & Submit</h1>
         <p class="subtitle">Real API integration, debounce, submit() with server errors</p>
       </header>
 
@@ -359,8 +359,7 @@ export class AsyncSubmitComponent {
         const username = value();
         return `${this.API_BASE}/api/auth/check-username?username=${encodeURIComponent(username)}`;
       },
-      onSuccess: (response:
-                  { available: boolean; message?: string; suggestions?: string[] }) => {
+      onSuccess: (response: { available: boolean; message?: string; suggestions?: string[] }) => {
         if (!response.available) {
           return {
             kind: 'taken',
