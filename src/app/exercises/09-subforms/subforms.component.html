@@ -18,11 +18,7 @@
     <h3>📝 Flight Booking</h3>
 
     <form (submit)="onSubmit()">
-      <!-- TODO 4: Pass FieldTree portions to child components -->
-      <!-- <app-passenger-form [passenger]="bookingForm.passenger" /> -->
-      <!-- <app-flight-form [flight]="bookingForm.flight" /> -->
-      <!-- <app-payment-form [payment]="bookingForm.payment" /> -->
-
+      <!-- Child components receive FieldTree portions of the parent form -->
       <app-passenger-form [passenger]="bookingForm.passenger" />
       <app-flight-form [flight]="bookingForm.flight" />
       <app-payment-form [payment]="bookingForm.payment" />

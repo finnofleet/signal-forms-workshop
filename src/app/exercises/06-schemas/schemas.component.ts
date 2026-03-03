@@ -25,7 +25,10 @@ import { Component, signal, computed } from '@angular/core';
 import { form, FormField, required, email, minLength, pattern, schema, apply, applyWhen } from '@angular/forms/signals';
 
 // TODO 1a: Create reusable addressSchema
-// Look at the shipping address section in the template to see which fields need validation
+// Street is required
+// City is required
+// Postal code is required
+// Country is required
 const addressSchema = schema<{
   street: string;
   city: string;
@@ -36,7 +39,8 @@ const addressSchema = schema<{
 });
 
 // TODO 1b: Create contactSchema
-// Look at the contact section in the template to see which fields and error messages are expected
+// Email is required and must have correct format
+// Phone must have 9 digits
 const contactSchema = schema<{
   email: string;
   phone: string;
@@ -462,12 +466,12 @@ export class SchemasComponent {
 
   // TODO 3: Create form with schemas and conditional validation
   protected readonly orderForm = form(this.orderModel, (f) => {
-    // TODO 3a: Apply contactSchema to f.contact
+    // TODO 3a: Contact info should use the contactSchema defined above
 
-    // TODO 3b: When customerType is 'business', validate company fields
+    // TODO 3b: When customerType is 'business', company name and tax ID are required
     // Hint: See "Conditional Validation with applyWhen" section
 
-    // TODO 3c: When deliveryType is 'shipping', validate the shipping address
+    // TODO 3c: When deliveryType is 'shipping', shipping address should use addressSchema
   });
 
   // KEEP AS-IS:

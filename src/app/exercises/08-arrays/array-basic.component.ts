@@ -268,8 +268,9 @@ export class ArrayBasicsComponent {
   });
 
   // TODO 2: Create form with validation
-  // Look at the template to see which fields need validation
-  // Use applyEach() for validating array items — see the hint section
+  // Customer name is required
+  // Each item: product is required, quantity min 1, price min 10
+  // Hint: See the "applyEach Pattern" section for array validation
   protected readonly orderForm = form(this.orderModel, (f) => {
     // Add validation here
   });

@@ -369,16 +369,13 @@ export class AsyncSubmitComponent {
 
   // TODO 2: Create form with async validation
   protected readonly regForm = form(this.regModel, (f) => {
-    // TODO 2a: Username — add built-in validators and debounce before async check
-
-    // TODO 2b: Async username validation — use validateHttp() to check availability
-    // API URL: ${this.API_BASE}/api/auth/check-username?username=...
-    // Response: { available: boolean, suggestions?: string[] }
-    // Hint: See "Async Validation Pattern" section
-
-    // TODO 2c: Email validation
-
-    // TODO 2d: Password validation
+    // TODO 2a: Username — required, min 3 characters, debounced async check
+    // TODO 2b: Username availability — check via API, show "taken" error if unavailable
+    //   API: GET ${this.API_BASE}/api/auth/check-username?username=...
+    //   Response: { available: boolean, suggestions?: string[] }
+    //   Hint: See "Async Validation Pattern" section
+    // TODO 2c: Email — required, valid format
+    // TODO 2d: Password — required, min 8 characters
   });
 
   useSuggestion(suggestion: string) {
@@ -386,11 +383,10 @@ export class AsyncSubmitComponent {
   }
 
   // TODO 3: Implement submit with server error handling
-  // Use submit() to wrap the API call. Inside:
-  // - Call this.api.register() with form values (use firstValueFrom to convert Observable)
-  // - On success: set successMessage
-  // - On server validation errors: map them to form errors with { kind, path, message }
-  // - On network error: set errorMessage
+  // - Send form data to API (this.api.register)
+  // - On success: show success message
+  // - On server validation errors: map them back to form fields
+  // - On network error: show error message
   // Hint: See "submit() with ApiService" section
   async onSubmit() {
     this.successMessage.set(null);

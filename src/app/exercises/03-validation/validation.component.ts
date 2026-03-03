@@ -150,9 +150,10 @@ export class ValidationComponent {
   });
 
   // TODO 1: Add validation for each field
-  // Look at the template error @switch blocks to see which error kinds each field expects
-  // Cross-field validation: confirmPassword must match password
-  // Hint: use validate() with valueOf() to read another field's value
+  // Username: required, min 3 characters
+  // Email: required, must be valid email format
+  // Password: required, min 8 characters
+  // Confirm password: required, must match password (cross-field validation)
   protected readonly regForm = form(this.regModel, (f) => {
     // Add validation here
   });

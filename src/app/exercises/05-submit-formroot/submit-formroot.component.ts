@@ -65,8 +65,10 @@ export class SubmitFormrootComponent {
     this.formErrors.set([]);
     this.successMessage.set(null);
 
-    // TODO 3: Use submit() with options object containing action and onInvalid callbacks
-    // action: async callback that simulates API call, shows success message, resets model
-    // onInvalid: callback that collects errors from form fields and sets formErrors signal
+    // TODO 3: Handle form submission
+    // - If valid: simulate API call (setTimeout), show success, reset form
+    //  await new Promise(resolve => setTimeout(resolve, 1500));
+    // - If invalid: collect all field errors and set formErrors signal
+    // Hint: See the "submit() options" hint section
   }
 }

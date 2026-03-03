@@ -63,33 +63,15 @@ interface BookingFormModel {
   template: `
     <div class="subform-card">
       <h4>👤 Passenger Details</h4>
-      <!-- TODO 1a: Add form fields bound to passenger FieldTree -->
-      <!-- Example:
-      <div class="form-row">
-        <div class="form-group">
-          <label>First Name</label>
-          <input
-            type="text"
-            class="form-control"
-            [formField]="passenger().firstName"
-            placeholder="First name"
-          />
-          @if (passenger().firstName().touched() && passenger().firstName().invalid()) {
-            @for (err of passenger().firstName().errors(); track err.kind) {
-              <div class="field-error">First name is required</div>
-            }
-          }
-        </div>
-        ... more fields
-      </div>
-      -->
+      <!-- TODO 1a: Add firstName, lastName, email, phone fields -->
+      <!-- Each field should bind to the passenger FieldTree and show validation errors -->
+      <!-- Hint: See the "FieldTree" hint section for binding syntax -->
       <p class="todo-placeholder">TODO: Implement passenger form fields</p>
     </div>
   `
 })
 export class PassengerFormComponent {
-  // TODO 1b: Declare input for FieldTree
-  // readonly passenger = input.required<FieldTree<BookingFormModel['passenger']>>();
+  // TODO 1b: Declare input with proper FieldTree type instead of any
   readonly passenger = input.required<any>();
 }
 
@@ -110,7 +92,7 @@ export class PassengerFormComponent {
   `
 })
 export class FlightFormComponent {
-  // TODO 2b: Declare input for FieldTree
+  // TODO 2b: Declare input with proper FieldTree type instead of any
   readonly flight = input.required<any>();
 }
 
@@ -131,7 +113,7 @@ export class FlightFormComponent {
   `
 })
 export class PaymentFormComponent {
-  // TODO 3b: Declare input for FieldTree
+  // TODO 3b: Declare input with proper FieldTree type instead of any
   readonly payment = input.required<any>();
 }
 
@@ -170,10 +152,10 @@ export class SubformsComponent {
     }
   });
 
-  // TODO 5: Create validation for each section using schema() and apply()
-  // Passenger: firstName and lastName required, email required + email format
+  // TODO 5: Create validation for each section
+  // Passenger: firstName and lastName required, email required + valid format
   // Flight: from, to, and date are required
-  // Payment: cardNumber required (16 chars), expMonth/expYear required, cvv required (3-4 chars)
+  // Payment: cardNumber required, expMonth/expYear required, cvv required
   protected readonly bookingForm = form(this.bookingModel, (f) => {
   });
 

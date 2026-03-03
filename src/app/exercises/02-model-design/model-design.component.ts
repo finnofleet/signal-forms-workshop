@@ -88,11 +88,11 @@ export class ModelDesignComponent {
   // TODO 4: Use linkedSignal to derive form model when userResource.value() changes
   protected readonly formModel = signal<UserFormModel>(EMPTY_FORM);
 
-  // TODO 5: Create form with validation + disabled() while loading
+  // TODO 5: Create form with validation
   protected readonly profileForm = form(this.formModel, (f) => {
-    // TODO 5a: Add required() and email() validators for the relevant fields
+    // TODO 5a: displayName and email are required; email must be valid format
 
-    // TODO 5b: Use disabled() to disable form while loading
+    // TODO 5b: Form should be disabled while data is loading from API
   });
 
   // TODO 6: Submit — transform form data back to domain model and call API
@@ -100,6 +100,6 @@ export class ModelDesignComponent {
     this.successMessage.set(null);
     this.errorMessage.set(null);
 
-    // TODO 6: Get form value, transform with formToDomain(), call this.api.updateUser(), handle response
+    // TODO 6: Get form data, convert back to domain model, send to API, handle success/error
   }
 }
