@@ -1,1 +1,113 @@
-/* A - Basics exercise styles */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.section-hint {
+  font-size: 0.875rem;
+  color: #6c757d;
+  margin: 0 0 1.25rem 0;
+  line-height: 1.6;
+}
+
+.section-hint code {
+  background: #f1f3f4;
+  padding: 0.1rem 0.35rem;
+  border-radius: 4px;
+  font-size: 0.82rem;
+  color: #e03131;
+}
+
+.tag {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  font-family: 'Monaco', 'Consolas', monospace;
+  background: #e7f5ff;
+  color: #1864ab;
+  border: 1px solid #a5d8ff;
+  border-radius: 4px;
+  padding: 0.1rem 0.4rem;
+  vertical-align: middle;
+  margin-left: 0.4rem;
+}
+
+/* Live preview */
+.preview-section .code-block pre {
+  margin: 0;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+/* Skills array */
+.skill-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-end;
+  margin-bottom: 0.75rem;
+}
+
+.skill-input {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.btn-icon {
+  padding: 0.6rem 0.85rem;
+  font-size: 0.875rem;
+  flex-shrink: 0;
+}
+
+.btn-icon:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Hints */
+.hint-details {
+  border: 2px dashed #e4e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+}
+
+.hint-details:last-child {
+  margin-bottom: 0;
+}
+
+.hint-summary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1rem;
+  cursor: pointer;
+  background: #f8f9fa;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #495057;
+  list-style: none;
+  transition: background 0.15s ease;
+}
+
+.hint-summary:hover {
+  background: #e9ecef;
+}
+
+.hint-details[open] .hint-summary {
+  border-bottom: 2px dashed #e4e7eb;
+}
+
+.hint-content {
+  padding: 1rem;
+}
+
+.hint-content .code-block {
+  margin: 0;
+}
+
+@media (max-width: 600px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+}

@@ -28,7 +28,6 @@
 
     <form>
       <div class="form-row">
-        <!-- Provided: first [formField] example -->
         <div class="form-group">
           <label for="firstName">First Name</label>
           <input
@@ -40,7 +39,6 @@
           />
         </div>
 
-        <!-- Provided: second [formField] example -->
         <div class="form-group">
           <label for="lastName">Last Name</label>
           <input
@@ -66,32 +64,25 @@
 
       <div class="form-group">
         <label for="age">Age</label>
-        <!--
-          TODO A-3:Change the input type from 'number' to 'text' and see what happens
-        -->
+        <!-- TODO A-3 resolved: type="number" ensures the model value stays a number -->
         <input
           id="age"
+          type="number"
           class="form-control"
           placeholder="e.g. 30"
           [formField]="profileForm.age"
-          type="number"
         />
       </div>
 
       <div class="form-group">
         <label for="bio">Bio</label>
-        <!--
-          TODO A-2: Add [formField]="profileForm.bio" to this textarea.
-          After saving, type something here and watch the Live Preview update.
-
-          Notice how the value inside profileModel() changes instantly —
-          that is the signal being reactive.
-        -->
+        <!-- TODO A-2 resolved: [formField] added -->
         <textarea
           id="bio"
           class="form-control"
           rows="3"
           placeholder="Tell us about yourself..."
+          [formField]="profileForm.bio"
         ></textarea>
       </div>
     </form>
@@ -115,8 +106,6 @@
     <p class="section-hint">
       <code>schema()</code> defines a reusable validation block for a specific type.
       <code>apply()</code> activates it for a nested object inside the form.
-      Until you complete TODO B-1 and B-2, these fields have no schema attached —
-      but they still bind via <code>[formField]</code>.
     </p>
 
     <form>
@@ -163,7 +152,6 @@
     <p class="section-hint">
       <code>applyEach()</code> registers each array item as its own FieldTree.
       Without it, array items cannot be individually bound with <code>[formField]</code>.
-      Your job: implement <code>addSkill()</code> and <code>removeSkill()</code> using immutable updates.
     </p>
 
     <form>
@@ -205,21 +193,15 @@
       </summary>
       <div class="hint-content">
         <div class="code-block">
-<pre>// 1. Reactive model
-protected readonly profileModel = signal(&#123;
+<pre>protected readonly profileModel = signal(&#123;
   firstName: '',
   lastName:  '',
   bio:       '',
 &#125;);
 
-// 2. Form — wraps the signal in a FieldTree
-protected readonly profileForm = form(this.profileModel, (_f) => &#123;
-  // validators go here (Exercise B)
-&#125;);
+protected readonly profileForm = form(this.profileModel, (_f) => &#123;&#125;);
 
-// 3. Read the current value
-profileModel()              // &#123; firstName: 'Ada', ... &#125;
-profileForm.firstName()     // Field object
+profileModel()                   // &#123; firstName: 'Ada', ... &#125;
 profileForm.firstName().value()  // 'Ada'</pre>
         </div>
       </div>
@@ -231,16 +213,8 @@ profileForm.firstName().value()  // 'Ada'</pre>
       </summary>
       <div class="hint-content">
         <div class="code-block">
-<pre>// Define a reusable schema outside the component
-const addressSchema = schema&lt;&#123;
-  street: string;
-  city:   string;
-  country: string;
-&#125;&gt;((_addr) => &#123;
-  // validators here in Exercise B
-&#125;);
+<pre>const addressSchema = schema&lt;&#123; street: string; city: string; country: string; &#125;&gt;((_addr) => &#123;&#125;);
 
-// Apply inside form()
 protected readonly profileForm = form(this.profileModel, (f) => &#123;
   apply(f.address, addressSchema);
 &#125;);</pre>
@@ -254,26 +228,12 @@ protected readonly profileForm = form(this.profileModel, (f) => &#123;
       </summary>
       <div class="hint-content">
         <div class="code-block">
-<pre>// Register array items as FieldTrees
-protected readonly profileForm = form(this.profileModel, (f) => &#123;
-  applyEach(f.skills, (_skill) => &#123;
-    // per-item validators here in Exercise B
-  &#125;);
-&#125;);
+<pre>applyEach(f.skills, (_skill) => &#123;&#125;);
 
-// Add item — immutable!
 addSkill(): void &#123;
   this.profileModel.update(current => (&#123;
     ...current,
     skills: [...current.skills, &#123; id: crypto.randomUUID(), name: '' &#125;],
-  &#125;));
-&#125;
-
-// Remove item — immutable!
-removeSkill(index: number): void &#123;
-  this.profileModel.update(current => (&#123;
-    ...current,
-    skills: current.skills.filter((_, i) => i !== index),
   &#125;));
 &#125;</pre>
         </div>

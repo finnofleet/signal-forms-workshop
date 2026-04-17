@@ -1,1 +1,205 @@
-/* C - Dynamic Forms exercise styles */
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+/* Toggle buttons (customer type, delivery type) */
+.toggle-group {
+  display: inline-flex;
+  border: 2px solid #e4e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-top: 0.375rem;
+}
+
+.toggle-btn {
+  padding: 0.5rem 1.25rem;
+  background: white;
+  border: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #6c757d;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.toggle-btn + .toggle-btn {
+  border-left: 2px solid #e4e7eb;
+}
+
+.toggle-btn.active {
+  background: #4ecdc4;
+  color: #1a1a2e;
+  font-weight: 600;
+}
+
+/* Checkbox label */
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  cursor: pointer;
+  font-weight: 600;
+  color: #344054;
+  font-size: 0.9rem;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+/* Disabled badge */
+.disabled-badge {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  background: #e9ecef;
+  color: #868e96;
+  border-radius: 4px;
+  padding: 0.1rem 0.4rem;
+  vertical-align: middle;
+  margin-left: 0.4rem;
+}
+
+/* Conditional sections */
+.conditional-section {
+  background: #f8f9fa;
+  border: 2px dashed #c8d0da;
+  border-radius: 10px;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 1.5rem;
+  animation: fadeSlideIn 0.2s ease;
+}
+
+.conditional-section h4 {
+  margin: 0 0 1rem 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #344054;
+}
+
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Invalid field border */
+.form-control.is-invalid {
+  border-color: #f03e3e;
+}
+
+.form-control.is-invalid:focus {
+  box-shadow: 0 0 0 3px rgba(240, 62, 62, 0.15);
+}
+
+/* Form state panel */
+.state-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+
+.state-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.875rem 0.5rem;
+  background: #f8f9fa;
+  border: 2px solid #e4e7eb;
+  border-radius: 8px;
+  transition: border-color 0.2s, background 0.2s;
+}
+
+.state-item.active {
+  border-color: #4ecdc4;
+  background: rgba(78, 205, 196, 0.08);
+}
+
+.state-label {
+  font-size: 0.75rem;
+  font-family: 'Monaco', 'Consolas', monospace;
+  color: #6c757d;
+}
+
+.state-value {
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: #344054;
+}
+
+.state-item.active .state-value {
+  color: #1a9e96;
+}
+
+/* Field state table */
+.field-state-table h4 {
+  margin: 0 0 0.5rem 0;
+  font-size: 0.875rem;
+  color: #495057;
+}
+
+.field-state-table table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.field-state-table th,
+.field-state-table td {
+  padding: 0.4rem 0.75rem;
+  border: 1px solid #e4e7eb;
+  text-align: center;
+}
+
+.field-state-table th {
+  background: #f1f3f5;
+  font-weight: 600;
+  color: #495057;
+}
+
+.field-state-table td:first-child {
+  text-align: left;
+}
+
+/* Hints */
+.hint-details {
+  border: 2px dashed #e4e7eb;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 0.75rem;
+}
+
+.hint-details:last-child { margin-bottom: 0; }
+
+.hint-summary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.875rem 1rem;
+  cursor: pointer;
+  background: #f8f9fa;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #495057;
+  list-style: none;
+  transition: background 0.15s;
+}
+
+.hint-summary:hover { background: #e9ecef; }
+
+.hint-details[open] .hint-summary {
+  border-bottom: 2px dashed #e4e7eb;
+}
+
+.hint-content { padding: 1rem; }
+.hint-content .code-block { margin: 0; }
+
+@media (max-width: 600px) {
+  .form-row { grid-template-columns: 1fr; }
+}

@@ -15,13 +15,6 @@
     </ul>
   </div>
 
-  <div class="alert alert-warning">
-    <strong>Instructions:</strong>
-    <code>StarRating</code> and <code>PriorityPicker</code> already work as standalone UI components.
-    Open the TypeScript file and follow TODO 1 (StarRating) and TODO 2 (PriorityPicker).
-    Once done, uncomment the <code>[formField]</code> bindings below.
-  </div>
-
   <!-- ── Feedback Form ──────────────────────────────────────────────────── -->
   <section class="exercise-section">
     <h3>Product Feedback</h3>
@@ -45,11 +38,8 @@
 
       <div class="form-group">
         <label>Rating</label>
-        <!--
-          TODO 3: Once StarRating implements FormValueControl, replace the line below with:
-          <app-star-rating [formField]="feedbackForm.rating" />
-        -->
-        <app-star-rating />
+        <!-- TODO 3 resolved: [formField] added, uses solution selector -->
+        <app-star-rating-solution [formField]="feedbackForm.rating" />
         @if (feedbackForm.rating().touched() && feedbackForm.rating().invalid()) {
           <div class="field-error">Please select at least 1 star</div>
         }
@@ -57,11 +47,8 @@
 
       <div class="form-group">
         <label>Priority</label>
-        <!--
-          TODO 4: Once PriorityPicker implements FormValueControl, replace with:
-          <app-priority-picker [formField]="feedbackForm.priority" />
-        -->
-        <app-priority-picker />
+        <!-- TODO 4 resolved: [formField] added, uses solution selector -->
+        <app-priority-picker-solution [formField]="feedbackForm.priority" />
       </div>
 
       <div class="form-group">
@@ -107,7 +94,7 @@
     </div>
   </section>
 
-  <!-- ── Hint ───────────────────────────────────────────────────────────── -->
+  <!-- ── Hints ──────────────────────────────────────────────────────────── -->
   <section class="exercise-section">
 
     <details class="hint-details">
@@ -118,21 +105,15 @@
         <div class="code-block">
 <pre>// The interface requires exactly one property:
 interface FormValueControl&lt;T&gt; &#123;
-  value: ModelSignal&lt;T&gt;;       // required
-  disabled?: InputSignal&lt;boolean&gt;; // optional
+  value: ModelSignal&lt;T&gt;;
+  disabled?: InputSignal&lt;boolean&gt;;
 &#125;
 
-// ❌ Before — standalone signal (not compatible with [formField])
-export class StarRating &#123;
-  protected readonly currentValue = signal(0);
-&#125;
-
-// ✅ After — satisfies FormValueControl&lt;number&gt;
+// ✅ Implementation:
 export class StarRating implements FormValueControl&lt;number&gt; &#123;
-  value = model&lt;number&gt;(0);   // model() creates a ModelSignal
+  value = model&lt;number&gt;(0);
 &#125;
 
-// Now [formField] just works:
 &lt;app-star-rating [formField]="form.rating" /&gt;</pre>
         </div>
       </div>
@@ -145,22 +126,6 @@ export class StarRating implements FormValueControl&lt;number&gt; &#123;
       <div class="hint-content">
         <div class="code-block">
 <pre>// ❌ OLD — ControlValueAccessor (~50 lines of boilerplate)
-@Component(&#123;
-  providers: [&#123;
-    provide: NG_VALUE_ACCESSOR,
-    useExisting: forwardRef(() =&gt; MyControl),
-    multi: true,
-  &#125;],
-&#125;)
-export class MyControl implements ControlValueAccessor &#123;
-  private _onChange = (_: any) =&gt; &#123;&#125;;
-  private _onTouched = () =&gt; &#123;&#125;;
-  writeValue(v: any) &#123; ... &#125;
-  registerOnChange(fn: any) &#123; this._onChange = fn; &#125;
-  registerOnTouched(fn: any) &#123; this._onTouched = fn; &#125;
-  setDisabledState(d: boolean) &#123; ... &#125;
-&#125;
-
 // ✅ NEW — FormValueControl (3 lines!)
 export class MyControl implements FormValueControl&lt;T&gt; &#123;
   value = model&lt;T&gt;(initialValue);

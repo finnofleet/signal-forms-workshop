@@ -17,13 +17,6 @@
     </ul>
   </div>
 
-  <div class="alert alert-warning">
-    <strong>Observe the bug first!</strong>
-    Before solving the TODOs, try submitting a "Personal" order.
-    Notice the form is invalid even though company fields are not shown?
-    That is the problem <code>applyWhen()</code> solves.
-  </div>
-
   <section class="exercise-section">
     <h3>Purchase Order</h3>
 
@@ -50,11 +43,7 @@
         </div>
       </div>
 
-      <!--
-        Part A: This @if hides the section visually — but without applyWhen()
-        in the TS, the validators on companyName and taxId still run.
-        After TODO A-1, the validators only apply when this section is visible.
-      -->
+      <!-- TODO A-1 resolved: applyWhen() in TS means validators only run for business -->
       @if (orderModel().customerType === 'business') {
         <div class="conditional-section">
           <h4>Business Details</h4>
@@ -164,16 +153,8 @@
         </div>
       </div>
 
-      <!--
-        Part B: After TODO B-1, change this @if condition.
-        Instead of checking the model directly, check whether the field is hidden:
-
-          @if (!orderForm.address.street().hidden())
-
-        This way, the template stays in sync with the form schema
-        without duplicating the condition logic.
-      -->
-      @if (orderModel().deliveryType === 'delivery') {
+      <!-- TODO B-1 resolved: @if uses field().hidden() instead of model check -->
+      @if (!orderForm.address.street().hidden()) {
         <div class="conditional-section">
           <h4>Delivery Address</h4>
 
@@ -234,19 +215,6 @@
       }
 
       <!-- ── Special Instructions (Part C) ────────────────────────────────── -->
-      <!--
-        Part C: The notes textarea is always VISIBLE, but should be disabled
-        (greyed out, not editable) until the user opts in via the checkbox.
-
-        Unlike hidden(), the field stays in the DOM — the user can see it
-        but cannot interact with it until enabled.
-
-        After TODO C-1, the textarea becomes interactive when checked.
-        After TODO C-2, it requires at least 10 characters when enabled.
-
-        Tip: [formField] reads field().disabled() automatically and sets the
-        HTML disabled attribute on the bound input/textarea.
-      -->
       <div class="form-group">
         <label class="checkbox-label">
           <input
@@ -356,11 +324,7 @@
       </summary>
       <div class="hint-content">
         <div class="code-block">
-<pre>// applyWhen(root, conditionFn, schemaFn)
-// conditionFn receives valueOf — use it to read other fields reactively.
-// Angular tracks these reads as dependencies and re-evaluates on change.
-
-applyWhen(
+<pre>applyWhen(
   f,
   (&#123; valueOf &#125;) =&gt; valueOf(f.customerType) === 'business',
   (f) =&gt; &#123;
@@ -379,18 +343,12 @@ applyWhen(
       </summary>
       <div class="hint-content">
         <div class="code-block">
-<pre>// hidden(field, conditionFn)
-// When condition is true → field.hidden() === true → validators are skipped.
-// Use field().hidden() in the template to keep visibility in sync with the schema.
-
-hidden(f.address.street, (&#123; valueOf &#125;) =&gt; valueOf(f.deliveryType) !== 'delivery');
+<pre>hidden(f.address.street, (&#123; valueOf &#125;) =&gt; valueOf(f.deliveryType) !== 'delivery');
 hidden(f.address.city,   (&#123; valueOf &#125;) =&gt; valueOf(f.deliveryType) !== 'delivery');
 hidden(f.address.zip,    (&#123; valueOf &#125;) =&gt; valueOf(f.deliveryType) !== 'delivery');
-
-// Also add the address validators (they are skipped when hidden):
 apply(f.address, addressSchema);
 
-// Template — single source of truth:
+// Template:
 &#64;if (!orderForm.address.street().hidden()) &#123;
   &lt;!-- address section --&gt;
 &#125;</pre>
@@ -404,22 +362,9 @@ apply(f.address, addressSchema);
       </summary>
       <div class="hint-content">
         <div class="code-block">
-<pre>// disabled(field, conditionFn)
-// When condition is true → field.disabled() === true
-//   • The bound input renders with the HTML disabled attribute
-//   • Validators on the field are skipped (won't block submission)
-//   • The field stays VISIBLE (contrast with hidden())
-
-disabled(f.notes, (&#123; valueOf &#125;) =&gt; !valueOf(f.hasSpecialInstructions));
-
-// Validators added unconditionally — they only fire when NOT disabled:
+<pre>disabled(f.notes, (&#123; valueOf &#125;) =&gt; !valueOf(f.hasSpecialInstructions));
 required(f.notes);
-minLength(f.notes, 10);
-
-// Comparison:
-//   hidden()   → invisible + validators skipped  → &#64;if (!field().hidden())
-//   disabled() → visible but read-only + validators skipped
-//   neither    → always visible, always validated</pre>
+minLength(f.notes, 10);</pre>
         </div>
       </div>
     </details>

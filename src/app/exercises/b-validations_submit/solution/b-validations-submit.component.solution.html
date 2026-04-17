@@ -33,8 +33,6 @@
       <!-- USERNAME ─────────────────────────────────────────────────────── -->
       <div class="form-group">
         <label for="username">Username</label>
-
-        <!-- Status icon overlay (pending / valid / invalid) — Part C -->
         <div class="input-with-status">
           <input
             id="username"
@@ -53,7 +51,6 @@
             <span class="status-icon error">✗</span>
           }
         </div>
-
         @if (regForm.username().touched() && regForm.username().invalid() && !regForm.username().pending()) {
           @for (err of regForm.username().errors(); track err.kind) {
             <div class="field-error">
@@ -110,8 +107,8 @@
           @for (err of regForm.password().errors(); track err.kind) {
             <div class="field-error">
               @switch (err.kind) {
-                @case ('required')        { Password is required }
-                @case ('minLength')       { At least 8 characters required }
+                @case ('required')         { Password is required }
+                @case ('minLength')        { At least 8 characters required }
                 @case ('passwordStrength') { {{ err.message }} }
               }
             </div>
@@ -142,14 +139,11 @@
         }
       </div>
 
-      <!--
-        TODO A-5: Guard this button so it cannot be clicked when the form
-        is invalid, has pending async validators, or is already submitting.
-
-        [disabled]="regForm().invalid() || regForm().pending() || regForm().submitting()"
-
-        Also add a loading state — swap the label text while submitting:
-
+      <!-- TODO A-5 resolved: [disabled] guard + dynamic label -->
+      <button
+        type="submit"
+        class="btn btn-primary"
+        [disabled]="regForm().invalid() || regForm().pending() || regForm().submitting()">
         @if (regForm().submitting()) {
           <span class="loading-spinner"></span> Creating account...
         } @else if (regForm().pending()) {
@@ -157,9 +151,6 @@
         } @else {
           Create Account
         }
-      -->
-      <button type="submit" class="btn btn-primary">
-        Create Account
       </button>
     </form>
   </section>
@@ -204,19 +195,17 @@
       </summary>
       <div class="hint-content">
         <div class="code-block">
-<pre>protected readonly regForm = form(this.regModel, (f) =&gt; &#123;
-  required(f.username);
-  minLength(f.username, 3);
-  maxLength(f.username, 20);
+<pre>required(f.username);
+minLength(f.username, 3);
+maxLength(f.username, 20);
 
-  required(f.email);
-  email(f.email);
+required(f.email);
+email(f.email);
 
-  required(f.password);
-  minLength(f.password, 8);
+required(f.password);
+minLength(f.password, 8);
 
-  required(f.confirmPassword);
-&#125;);</pre>
+required(f.confirmPassword);</pre>
         </div>
       </div>
     </details>
@@ -227,17 +216,12 @@
       </summary>
       <div class="hint-content">
         <div class="code-block">
-<pre>// Synchronous custom validator
-validate(f.password, (&#123; value &#125;) =&gt; &#123;
+<pre>validate(f.password, (&#123; value &#125;) =&gt; &#123;
   const v = value();
   const strong = /[A-Z]/.test(v) &amp;&amp; /[0-9]/.test(v) &amp;&amp; /[!@#$%^&amp;*]/.test(v);
-  return strong
-    ? null
-    : &#123; kind: 'passwordStrength', message: 'Need uppercase, number, and special char (!@#$%^&amp;*)' &#125;;
+  return strong ? null : &#123; kind: 'passwordStrength', message: '...' &#125;;
 &#125;);
 
-// Cross-field validator — valueOf() creates a reactive dependency
-// on another field, so re-validation triggers when that field changes.
 validate(f.confirmPassword, (&#123; value, valueOf &#125;) =&gt; &#123;
   return value() !== valueOf(f.password)
     ? &#123; kind: 'mismatch', message: 'Passwords do not match' &#125;
@@ -253,25 +237,18 @@ validate(f.confirmPassword, (&#123; value, valueOf &#125;) =&gt; &#123;
       </summary>
       <div class="hint-content">
         <div class="code-block">
-<pre>// Debounce prevents an API call on every keystroke
-debounce(f.username, 400);
+<pre>debounce(f.username, 400);
 
-// validateHttp puts the field into pending() while the request is in-flight
 validateHttp(f.username, &#123;
-  request: (&#123; value &#125;) =&gt;
-    `$&#123;API_BASE&#125;/api/auth/check-username?username=$&#123;encodeURIComponent(value())&#125;`,
+  request: (&#123; value &#125;) =&gt; `$&#123;API_BASE&#125;/api/auth/check-username?username=$&#123;encodeURIComponent(value())&#125;`,
   onSuccess: (res: &#123; available: boolean &#125;) =&gt;
     res.available ? null : &#123; kind: 'taken', message: 'Username is already taken' &#125;,
-  onError: () =&gt; (&#123; kind: 'networkError', message: 'Could not verify username — try again' &#125;),
+  onError: () =&gt; (&#123; kind: 'networkError', message: 'Could not verify username' &#125;),
 &#125;);
 
-// submit() runs the action only when the form is valid AND not pending.
-// While running, regForm().submitting() === true.
-// Return null for success, or a ValidationError[] to map server errors to fields.
 async onSubmit(): Promise&lt;void&gt; &#123;
-  this.successMessage.set(null);
   await submit(this.regForm, async () =&gt; &#123;
-    await new Promise(r =&gt; setTimeout(r, 1500)); // simulate API
+    await new Promise(r =&gt; setTimeout(r, 1500));
     this.successMessage.set(`Welcome, $&#123;this.regModel().username&#125;!`);
     this.regModel.set(&#123; username: '', email: '', password: '', confirmPassword: '' &#125;);
     return null;

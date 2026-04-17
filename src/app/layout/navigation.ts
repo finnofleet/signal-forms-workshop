@@ -185,28 +185,28 @@ export class NavigationComponent {
       label: 'Basics',
       badge: 'A',
       badgeClass: 'basics',
-      description: 'form(), [formField], Field State'
+      description: 'signal(), form(), [formField], schema(), applyEach()'
     },
     {
       path: '/b-validations-submit',
       label: 'Validations & Submit',
       badge: 'B',
       badgeClass: 'validation',
-      description: 'Built-in validators, custom validators, submit()'
+      description: 'required · email · validate() · validateHttp · submit()'
     },
     {
       path: '/c-dynamic-forms',
       label: 'Dynamic Forms',
       badge: 'C',
       badgeClass: 'schemas',
-      description: 'Arrays, linkedSignal, conditional logic'
+      description: 'applyWhen() · hidden() · conditional validation'
     },
     {
       path: '/d-custom-controls',
       label: 'Custom Controls',
       badge: 'D',
       badgeClass: 'controls',
-      description: 'FormValueControl, FormCheckboxControl, FieldTree'
+      description: 'FormValueControl&lt;T&gt; · model() · no ControlValueAccessor'
     }
   ];
 }
