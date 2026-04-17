@@ -180,72 +180,33 @@ interface NavItem {
 })
 export class NavigationComponent {
   navItems: NavItem[] = [
-    // Module 1: Foundations
     {
-      path: '/01-basics',
+      path: '/a-basics',
       label: 'Basics',
-      badge: '01',
+      badge: 'A',
       badgeClass: 'basics',
       description: 'form(), [formField], Field State'
     },
-    // Module 2: Form Model Design
     {
-      path: '/02-model-design',
-      label: 'Model Design',
-      badge: '02',
-      badgeClass: 'schemas',
-      description: 'Domain ↔ form model, linkedSignal, rxResource'
-    },
-    // Module 3: Validation Deep Dive
-    {
-      path: '/03-validation',
-      label: 'Validation',
-      badge: '03',
+      path: '/b-validations-submit',
+      label: 'Validations & Submit',
+      badge: 'B',
       badgeClass: 'validation',
-      description: 'Built-in, custom, cross-field validators'
+      description: 'Built-in validators, custom validators, submit()'
     },
     {
-      path: '/04-async-submit',
-      label: 'Async & Submit',
-      badge: '04',
-      badgeClass: 'async',
-      description: 'Async validation, submit(), httpResource'
-    },
-    {
-      path: '/05-submit-formroot',
-      label: 'Submit & FormRoot',
-      badge: '05',
-      badgeClass: 'async',
-      description: 'submit() options, FormRoot directive'
-    },
-    // Module 4: Scalable Architectures
-    {
-      path: '/06-schemas',
-      label: 'Schemas',
-      badge: '06',
+      path: '/c-dynamic-forms',
+      label: 'Dynamic Forms',
+      badge: 'C',
       badgeClass: 'schemas',
-      description: 'Reusable schemas, conditional logic'
+      description: 'Arrays, linkedSignal, conditional logic'
     },
     {
-      path: '/07-custom-controls',
+      path: '/d-custom-controls',
       label: 'Custom Controls',
-      badge: '07',
+      badge: 'D',
       badgeClass: 'controls',
-      description: 'FormValueControl, FormCheckboxControl'
-    },
-    {
-      path: '/08-arrays',
-      label: 'Arrays',
-      badge: '08',
-      badgeClass: 'controls',
-      description: 'Dynamic arrays, applyEach()'
-    },
-    {
-      path: '/09-subforms',
-      label: 'Subforms',
-      badge: '09',
-      badgeClass: 'controls',
-      description: 'FieldTree, child components, schema()'
+      description: 'FormValueControl, FormCheckboxControl, FieldTree'
     }
   ];
 }
