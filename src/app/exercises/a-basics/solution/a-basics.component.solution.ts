@@ -46,9 +46,8 @@ export class ABasicsSolutionComponent {
   }
 
   removeSkill(index: number): void {
-    this.profileModel.update(current => ({
-      ...current,
-      skills: current.skills.filter((_, i) => i !== index),
-    }));
+    const skills = this.profileModel().skills;
+    skills.splice(index, 1);
+    this.profileModel.set({ ...this.profileModel(), skills });
   }
 }

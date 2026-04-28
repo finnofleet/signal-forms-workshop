@@ -25,14 +25,11 @@ import { JsonPipe } from '@angular/common';
 // ─── Part B ──────────────────────────────────────────────────────────────────
 // TODO B-1: Define an addressSchema.
 //
-// schema() creates a reusable form schema for a specific type.
+// schema() creates a reusable form schema for a specific type (address with fields, street, city, country).
 // Declare it outside the component so it can be reused across forms.
 // No validators needed yet — that is Exercise B territory.
 //
 // const addressSchema = schema<{
-//   street: string;
-//   city: string;
-//   country: string;
 // }>((_addr) => {
 //   // validators go here in Exercise B
 // });
@@ -56,9 +53,8 @@ export class ABasicsComponent {
     lastName:  '',
     role:      '',
     age:       0,
-    // TODO A-1: The bio field is missing!
-    //   Add  bio: ''  here, then wire up [formField] in the template (see TODO A-2).
-    //   After saving, watch the live preview update as you type.
+    // TODO A-1: Include a string field for 'bio' and wire up the [formField] in the template (see TODO A-2).
+    // After saving, watch the live preview update as you type.
 
     // Part B ↓ (uncomment when you reach Part B)
     address: {
@@ -81,10 +77,8 @@ export class ABasicsComponent {
   protected readonly profileForm = form(this.profileModel, (f) => {
 
     // TODO B-2: Activate the address schema.
-    //   Uncomment after completing TODO B-1.
+    //   Apply the address schema from TODO B-1.
     //   apply() tells the form to use addressSchema for the nested address object.
-    //
-    // apply(f.address, addressSchema);
 
     // applyEach() is already wired so the template can iterate over skills.
     // Even without validators it is required for array items to become FieldTrees.
@@ -95,19 +89,11 @@ export class ABasicsComponent {
 
   // ─── Part C ────────────────────────────────────────────────────────────────
   // TODO C-1: Add a new empty skill to the list.
-  //   Signal updates must be immutable — always return a new object.
-  //   this.profileModel.update(current => ({
-  //     ...current,
-  //     skills: [...current.skills, { id: crypto.randomUUID(), name: '' }],
-  //   }));
+  // Signal updates must be immutable — always return a new object.
   addSkill(): void {
   }
 
   // TODO C-2: Remove the skill at the given index.
-  //   this.profileModel.update(current => ({
-  //     ...current,
-  //     skills: current.skills.filter((_, i) => i !== index),
-  //   }));
   removeSkill(_index: number): void {
   }
 }
