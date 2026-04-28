@@ -1,29 +1,6 @@
-/*
- * ================================================================
- * 🎯 EXERCISE GOAL: Async Validation and Submit
- * ================================================================
- * You will learn:
- * - Async validation with real API
- * - How to use debounce() to limit requests
- * - How to handle pending() state in UI
- * - How to use submit() with server error mapping
- *
- * ✅ DONE WHEN:
- * - Username checked asynchronously (with debounce)
- * - Pending/success/error icons display correctly
- * - Username suggestions show when taken
- * - Submit sends data to API
- * - Server errors map to form fields
- *
- * ⏱️ TIME: 15-18 minutes
- *
- * 💡 HINT: "Async Validation" and "submit()" sections are key!
- * ================================================================
- */
-
 import { Component, signal, inject } from '@angular/core';
 import { form, FormField, required, email, minLength, debounce, submit, validateHttp } from '@angular/forms/signals';
-import { ApiService } from '../../shared/services/api.service';
+import { ApiService } from '../../../shared/services/api.service';
 import { firstValueFrom } from 'rxjs';
 
 @Component({
@@ -360,36 +337,88 @@ export class AsyncSubmitComponent {
   protected readonly successMessage = signal<string | null>(null);
   protected readonly errorMessage = signal<string | null>(null);
 
-  // TODO 1: Create form model — look at the template to see which fields are needed
+  // Form Model
   protected readonly regModel = signal({
     username: '',
     email: '',
     password: ''
   });
 
-  // TODO 2: Create form with async validation
+  // Form with async validation
   protected readonly regForm = form(this.regModel, (f) => {
-    // TODO 2a: Username — required, min 3 characters, debounced async check
-    // TODO 2b: Username availability — check via API, show "taken" error if unavailable
-    //   API: GET ${this.API_BASE}/api/auth/check-username?username=...
-    //   Response: { available: boolean, suggestions?: string[] }
-    //   Hint: See "Async Validation Pattern" section
-    // TODO 2c: Email — required, valid format
-    // TODO 2d: Password — required, min 8 characters
+    // Username validation
+    required(f.username);
+    minLength(f.username, 3);
+    debounce(f.username, 400);
+
+    // Async username check using validateHttp()
+    // Note: validateHttp requires URL string, so we can't use ApiService here directly
+    // But we handle the response including suggestions
+    validateHttp(f.username, {
+      request: ({ value }) => {
+        const username = value();
+        return `${this.API_BASE}/api/auth/check-username?username=${encodeURIComponent(username)}`;
+      },
+      onSuccess: (response: { available: boolean; message?: string; suggestions?: string[] }) => {
+        if (!response.available) {
+          return {
+            kind: 'taken',
+            message: response.message || 'Username is already taken'
+          };
+        }
+        return null;
+      },
+      onError: () => ({
+        kind: 'error',
+        message: 'Could not check username availability'
+      })
+    });
+
+    // Email validation
+    required(f.email);
+    email(f.email);
+
+    // Password validation
+    required(f.password);
+    minLength(f.password, 8);
   });
 
   useSuggestion(suggestion: string) {
     this.regModel.update(m => ({ ...m, username: suggestion }));
   }
 
-  // TODO 3: Implement submit with server error handling
-  // - Send form data to API (this.api.register)
-  // - On success: show success message
-  // - On server validation errors: map them back to form fields
-  // - On network error: show error message
-  // Hint: See "submit() with ApiService" section
   async onSubmit() {
     this.successMessage.set(null);
     this.errorMessage.set(null);
+
+    await submit(this.regForm, async (formTree) => {
+      try {
+        // Use ApiService for registration
+        const response = await firstValueFrom(
+          this.api.register(formTree().value())
+        );
+
+        if (response.success) {
+          this.successMessage.set(`Registration successful! User ID: ${response.id}`);
+          return null;
+        }
+
+        // Map server errors to form fields
+        // Structure must be: { kind, path?, message? }
+        if (response.errors) {
+          this.errorMessage.set('Please fix the errors below');
+          return response.errors.map(err => ({
+            kind: err.code.toLowerCase(),
+            path: err.field,
+            message: err.message
+          }));
+        }
+
+        return null;
+      } catch (error: any) {
+        this.errorMessage.set(error.message || 'Registration failed. Please try again.');
+        return null;
+      }
+    });
   }
 }

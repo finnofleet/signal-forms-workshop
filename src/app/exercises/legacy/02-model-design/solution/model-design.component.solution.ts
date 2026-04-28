@@ -1,8 +1,8 @@
 import { Component, signal, inject, linkedSignal } from '@angular/core';
 import {form, FormField, required, email, disabled, submit, FormRoot} from '@angular/forms/signals';
 import { rxResource } from '@angular/core/rxjs-interop';
-import { ApiService } from '../../../shared/services/api.service';
-import { User } from '../../../shared/models/api.models';
+import { ApiService } from '../../../../shared/services/api.service';
+import { User } from '../../../../shared/models/api.models';
 import { firstValueFrom } from 'rxjs';
 import { JsonPipe } from '@angular/common';
 
