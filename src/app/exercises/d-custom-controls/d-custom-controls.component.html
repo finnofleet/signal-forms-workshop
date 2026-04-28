@@ -46,8 +46,7 @@
       <div class="form-group">
         <label>Rating</label>
         <!--
-          TODO 3: Once StarRating implements FormValueControl, replace the line below with:
-          <app-star-rating [formField]="feedbackForm.rating" />
+          TODO 3: Bind `feedbackForm.rating` to `app-star-rating` component
         -->
         <app-star-rating />
         @if (feedbackForm.rating().touched() && feedbackForm.rating().invalid()) {
@@ -58,8 +57,7 @@
       <div class="form-group">
         <label>Priority</label>
         <!--
-          TODO 4: Once PriorityPicker implements FormValueControl, replace with:
-          <app-priority-picker [formField]="feedbackForm.priority" />
+          TODO 4: Bind `feedbackForm.priority` to `app-priority-picker` component
         -->
         <app-priority-picker />
       </div>

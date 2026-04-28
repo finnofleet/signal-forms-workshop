@@ -19,8 +19,17 @@
  * ================================================================
  */
 
-import { Component, signal, input, model } from '@angular/core';
-import { form, FormField, required, min, FormValueControl } from '@angular/forms/signals';
+import { Component, signal, input, model, InputSignal, InputSignalWithTransform, ModelSignal, OutputRef} from '@angular/core';
+import {
+  form,
+  FormField,
+  required,
+  min,
+  FormValueControl,
+  DisabledReason,
+  ValidationError,
+  WithOptionalFieldTree
+} from '@angular/forms/signals';
 
 // ──────────────────────────────────────────────────────────────────────────────
 // StarRatingComponent — the UI is ready and works standalone.
@@ -59,7 +68,11 @@ import { form, FormField, required, min, FormValueControl } from '@angular/forms
     </div>
   `,
   styles: [`
-    .star-rating { display: flex; align-items: center; gap: 0.25rem; }
+    .star-rating {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
 
     .star-btn {
       background: none;
@@ -82,8 +95,8 @@ import { form, FormField, required, min, FormValueControl } from '@angular/forms
     }
   `]
 })
-export class StarRatingComponent /* TODO 1a: implements FormValueControl<number> */ {
-  // TODO 1b: Replace this line ↓ with:  value = model<number>(0);
+// TODO 1: implement FormValueControl<number> and adapt component
+export class StarRatingComponent {
   protected readonly currentValue = signal(0);
 
   readonly hoveredStar = signal(0);
@@ -91,14 +104,13 @@ export class StarRatingComponent /* TODO 1a: implements FormValueControl<number>
   readonly labels = ['Poor', 'Fair', 'Good', 'Very Good', 'Excellent'];
 
   selectStar(star: number): void {
-    // TODO 1c: change currentValue to value
     this.currentValue.set(star);
   }
 }
 
 // ──────────────────────────────────────────────────────────────────────────────
 // PriorityPickerComponent — same pattern, implement FormValueControl<string>.
-// TODO 2: Apply the same three steps as StarRating (implements, model(), references).
+// TODO 1: Make it implement FormValueControl<string> so [formField] can bind to it.
 // ──────────────────────────────────────────────────────────────────────────────
 
 @Component({
@@ -139,8 +151,8 @@ export class StarRatingComponent /* TODO 1a: implements FormValueControl<number>
     .level-high.selected   { background: #ffe3e3; border-color: #f03e3e; color: #c92a2a; }
   `]
 })
-export class PriorityPickerComponent /* TODO 2a: implements FormValueControl<string> */ {
-  // TODO 2b: Replace with  value = model<string>('low');
+// TODO 2: implement FormValueControl<string> and adapt component
+export class PriorityPickerComponent {
   protected readonly currentValue = signal('low');
 
   readonly options = [
