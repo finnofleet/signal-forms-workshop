@@ -28,11 +28,12 @@
   <section class="exercise-section">
     <h3>Account Registration</h3>
 
-    <form (submit)="onSubmit()">
+    <form (submit)="onSubmit($event)">
 
       <!-- USERNAME ─────────────────────────────────────────────────────── -->
       <div class="form-group">
         <label for="username">Username</label>
+
         <div class="input-with-status">
           <input
             id="username"
@@ -51,6 +52,7 @@
             <span class="status-icon error">✗</span>
           }
         </div>
+
         @if (regForm.username().touched() && regForm.username().invalid() && !regForm.username().pending()) {
           @for (err of regForm.username().errors(); track err.kind) {
             <div class="field-error">
@@ -58,6 +60,7 @@
                 @case ('required')     { Username is required }
                 @case ('minLength')    { At least 3 characters required }
                 @case ('maxLength')    { Maximum 20 characters allowed }
+                @case ('invalidChars') { {{ err.message }} } <!-- custom error with custom message -->
                 @case ('taken')        { {{ err.message }} }
                 @case ('networkError') { {{ err.message }} }
               }
@@ -84,8 +87,10 @@
           @for (err of regForm.email().errors(); track err.kind) {
             <div class="field-error">
               @switch (err.kind) {
-                @case ('required') { Email is required }
-                @case ('email')    { Please enter a valid email address }
+                @case ('required')         { Email is required }
+                @case ('email')            { Please enter a valid email address }
+                @case ('bannedDomain')     { {{ err.message }} }
+                @case ('domainCheckError') { {{ err.message }} }
               }
             </div>
           }
@@ -139,11 +144,8 @@
         }
       </div>
 
-      <!-- TODO A-5 resolved: [disabled] guard + dynamic label -->
-      <button
-        type="submit"
-        class="btn btn-primary"
-        [disabled]="regForm().invalid() || regForm().pending() || regForm().submitting()">
+      <button type="submit" class="btn btn-primary"
+              [disabled]="regForm().invalid() || regForm().pending() || regForm().submitting()">
         @if (regForm().submitting()) {
           <span class="loading-spinner"></span> Creating account...
         } @else if (regForm().pending()) {
@@ -186,78 +188,30 @@
     </div>
   </section>
 
-  <!-- ── Hints ──────────────────────────────────────────────────────────── -->
+  <!-- ── Error Summary panel ───────────────────────────────────────────────── -->
   <section class="exercise-section">
-
-    <details class="hint-details">
-      <summary class="hint-summary">
-        <span>💡 Part A – Built-in validators</span>
-      </summary>
-      <div class="hint-content">
-        <div class="code-block">
-<pre>required(f.username);
-minLength(f.username, 3);
-maxLength(f.username, 20);
-
-required(f.email);
-email(f.email);
-
-required(f.password);
-minLength(f.password, 8);
-
-required(f.confirmPassword);</pre>
-        </div>
-      </div>
-    </details>
-
-    <details class="hint-details">
-      <summary class="hint-summary">
-        <span>💡 Part B – Custom validators with validate()</span>
-      </summary>
-      <div class="hint-content">
-        <div class="code-block">
-<pre>validate(f.password, (&#123; value &#125;) =&gt; &#123;
-  const v = value();
-  const strong = /[A-Z]/.test(v) &amp;&amp; /[0-9]/.test(v) &amp;&amp; /[!@#$%^&amp;*]/.test(v);
-  return strong ? null : &#123; kind: 'passwordStrength', message: '...' &#125;;
-&#125;);
-
-validate(f.confirmPassword, (&#123; value, valueOf &#125;) =&gt; &#123;
-  return value() !== valueOf(f.password)
-    ? &#123; kind: 'mismatch', message: 'Passwords do not match' &#125;
-    : null;
-&#125;);</pre>
-        </div>
-      </div>
-    </details>
-
-    <details class="hint-details">
-      <summary class="hint-summary">
-        <span>💡 Part C – Async validation + submit()</span>
-      </summary>
-      <div class="hint-content">
-        <div class="code-block">
-<pre>debounce(f.username, 400);
-
-validateHttp(f.username, &#123;
-  request: (&#123; value &#125;) =&gt; `$&#123;API_BASE&#125;/api/auth/check-username?username=$&#123;encodeURIComponent(value())&#125;`,
-  onSuccess: (res: &#123; available: boolean &#125;) =&gt;
-    res.available ? null : &#123; kind: 'taken', message: 'Username is already taken' &#125;,
-  onError: () =&gt; (&#123; kind: 'networkError', message: 'Could not verify username' &#125;),
-&#125;);
-
-async onSubmit(): Promise&lt;void&gt; &#123;
-  await submit(this.regForm, async () =&gt; &#123;
-    await new Promise(r =&gt; setTimeout(r, 1500));
-    this.successMessage.set(`Welcome, $&#123;this.regModel().username&#125;!`);
-    this.regModel.set(&#123; username: '', email: '', password: '', confirmPassword: '' &#125;);
-    return null;
-  &#125;);
-&#125;</pre>
-        </div>
-      </div>
-    </details>
-
+    <h3>Error Summary</h3>
+    <p class="section-hint">
+      <code>regForm().errorSummary()</code> collects all validation errors from the form and its descendants.
+    </p>
+    @if (regForm().errorSummary().length === 0) {
+      <p class="section-hint">No errors.</p>
+    } @else {
+      <ul>
+        @for (err of regForm().errorSummary(); track err.kind) {
+          <li>
+            <div class="field-error">
+              <span>
+                <strong>{{ err.kind }}</strong>: {{ err.message }}
+              </span>
+            </div>
+            <div>
+              <pre class="field-hint">{{ err | json }}</pre>
+            </div>
+          </li>
+        }
+      </ul>
+    }
   </section>
 
 </div>

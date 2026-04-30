@@ -142,23 +142,25 @@
         }
       </div>
 
-      <!--
-        TODO A-5: Guard this button so it cannot be clicked when the form
-        is invalid, has pending async validators, or is already submitting.
-
-        [disabled]="regForm().invalid() || regForm().pending() || regForm().submitting()"
-
-        Also add a loading state — swap the label text while submitting:
-
-        @if (regForm().submitting()) {
-          <span class="loading-spinner"></span> Creating account...
-        } @else if (regForm().pending()) {
-          Validating...
-        } @else {
-          Create Account
-        }
-      -->
       <button type="submit" class="btn btn-primary">
+        <!--
+          TODO C-3: Guard this button so it cannot be clicked when the form
+           is invalid, has pending async validators, or is already submitting.
+        -->
+
+<!--        [disabled]="regForm().invalid() || regForm().pending() || regForm().submitting()"-->
+
+        <!--
+          TODO C-3: Also add a loading state — swap the label text while submitting:
+        -->
+
+<!--        @if (regForm().submitting()) {-->
+<!--          <span class="loading-spinner"></span> Creating account...-->
+<!--        } @else if (regForm().pending()) {-->
+<!--          Validating...-->
+<!--        } @else {-->
+<!--          Create Account-->
+<!--        }-->
         Create Account
       </button>
     </form>
@@ -194,6 +196,13 @@
       </div>
     </div>
   </section>
+
+  <!-- ── Error Summary panel ───────────────────────────────────────────────── -->
+
+  <!--
+    TODO D-1: add a section showing a summary of all form (validation) errors.
+     A rudimentary list of sorts is enough, this is more about showcasing the errorSummary()
+  -->
 
   <!-- ── Hints ──────────────────────────────────────────────────────────── -->
   <section class="exercise-section">

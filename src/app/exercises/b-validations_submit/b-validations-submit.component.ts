@@ -19,13 +19,21 @@
  * ================================================================
  */
 
-import { Component, signal, inject } from '@angular/core';
+import {Component, inject, signal} from '@angular/core';
 import {
-  form, FormField,
-  required, email, minLength, maxLength,
-  validate, debounce, validateHttp, submit,
+  debounce,
+  email,
+  form,
+  FormField,
+  maxLength,
+  minLength,
+  required,
+  submit,
+  validate,
+  validateHttp,
+  ValidationError,
 } from '@angular/forms/signals';
-import { ApiService } from '../../shared/services/api.service';
+import {ApiService} from '../../shared/services/api.service';
 
 const API_BASE = 'https://signal-forms-workshop-api.matestefanczyk.workers.dev';
 
@@ -49,6 +57,8 @@ export class BValidationsSubmitComponent {
     password:        '',
     confirmPassword: '',
   });
+
+  // TODO D-1: show a form errors summary below the form. See template for corresponding TODO
 
   protected readonly regForm = form(this.regModel, (f) => {
 
@@ -117,13 +127,14 @@ export class BValidationsSubmitComponent {
   //   submit() only runs the action when the form is valid AND not pending.
   //   While running, regForm().submitting() is true — the template shows a spinner.
   //
-  //   await submit(this.regForm, async () => {
+  //   async performSubmit(): Promise<ValidationError[] | null> {
   //     // Simulate an API call — replace with this.api.register(...) if desired
   //     await new Promise(r => setTimeout(r, 1500));
   //     this.successMessage.set(`Welcome, ${this.regModel().username}!`);
-  //     this.regModel.set({ username: '', email: '', password: '', confirmPassword: '' });
+  //     this.regForm().reset({ username: '', email: '', password: '', confirmPassword: '' });
   //     return null; // null = success, return ValidationError[] to map server errors to fields
   //   });
+
   async onSubmit(): Promise<void> {
     this.successMessage.set(null);
     // TODO C-3: Replace this stub with submit() ↑
