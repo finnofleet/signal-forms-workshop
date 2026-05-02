@@ -14,8 +14,8 @@ export const routes: Routes = [
     title: 'Signal Forms - A: Basics'
   },
   {
-    path: 'b-validations-submit',
-    loadComponent: () => import('./exercises/b-validations_submit/b-validations-submit.component').then(m => m.BValidationsSubmitComponent),
+    path: 'b-validators-submit',
+    loadComponent: () => import('./exercises/b-validators-submit/b-validators-submit.component').then(m => m.BValidatorsSubmitComponent),
     title: 'Signal Forms - B: Validations & Submit'
   },
   {

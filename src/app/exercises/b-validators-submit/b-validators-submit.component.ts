@@ -38,13 +38,13 @@ import {ApiService} from '../../shared/services/api.service';
 const API_BASE = 'https://signal-forms-workshop-api.matestefanczyk.workers.dev';
 
 @Component({
-  selector: 'app-b-validations-submit',
+  selector: 'app-b-validators-submit',
   standalone: true,
   imports: [FormField],
-  templateUrl: './b-validations-submit.component.html',
-  styleUrl: './b-validations-submit.component.css'
+  templateUrl: './b-validators-submit.component.html',
+  styleUrl: './b-validators-submit.component.css'
 })
-export class BValidationsSubmitComponent {
+export class BValidatorsSubmitComponent {
   private readonly api = inject(ApiService);
 
   protected readonly successMessage = signal<string | null>(null);

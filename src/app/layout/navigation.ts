@@ -188,11 +188,11 @@ export class NavigationComponent {
       description: 'signal(), form(), [formField], schema(), applyEach()'
     },
     {
-      path: '/b-validations-submit',
-      label: 'Validations & Submit',
+      path: '/b-validators-submit',
+      label: 'Validators & Submit',
       badge: 'B',
       badgeClass: 'validation',
-      description: 'required · email · validate() · validateHttp · submit()'
+      description: 'required() · email() · validate() · validateHttp · submit()'
     },
     {
       path: '/c-dynamic-forms',
