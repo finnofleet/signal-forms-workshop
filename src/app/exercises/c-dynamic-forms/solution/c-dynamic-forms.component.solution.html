@@ -20,7 +20,7 @@
   <section class="exercise-section">
     <h3>Purchase Order</h3>
 
-    <form (submit)="onSubmit()">
+    <form (submit)="onSubmit($event)">
 
       <!-- ── Customer Type ───────────────────────────────────────────────── -->
       <div class="form-group">
@@ -315,60 +315,30 @@
     </div>
   </section>
 
-  <!-- ── Hints ──────────────────────────────────────────────────────────── -->
+  <!-- ── Error Summary panel ───────────────────────────────────────────────── -->
   <section class="exercise-section">
-
-    <details class="hint-details">
-      <summary class="hint-summary">
-        <span>💡 Part A – applyWhen()</span>
-      </summary>
-      <div class="hint-content">
-        <div class="code-block">
-<pre>applyWhen(
-  f,
-  (&#123; valueOf &#125;) =&gt; valueOf(f.customerType) === 'business',
-  (f) =&gt; &#123;
-    required(f.companyName);
-    required(f.taxId);
-    pattern(f.taxId, /^[A-Z]&#123;2&#125;\d&#123;9&#125;$/);
-  &#125;,
-);</pre>
-        </div>
-      </div>
-    </details>
-
-    <details class="hint-details">
-      <summary class="hint-summary">
-        <span>💡 Part B – hidden()</span>
-      </summary>
-      <div class="hint-content">
-        <div class="code-block">
-<pre>hidden(f.address.street, (&#123; valueOf &#125;) =&gt; valueOf(f.deliveryType) !== 'delivery');
-hidden(f.address.city,   (&#123; valueOf &#125;) =&gt; valueOf(f.deliveryType) !== 'delivery');
-hidden(f.address.zip,    (&#123; valueOf &#125;) =&gt; valueOf(f.deliveryType) !== 'delivery');
-apply(f.address, addressSchema);
-
-// Template:
-&#64;if (!orderForm.address.street().hidden()) &#123;
-  &lt;!-- address section --&gt;
-&#125;</pre>
-        </div>
-      </div>
-    </details>
-
-    <details class="hint-details">
-      <summary class="hint-summary">
-        <span>💡 Part C – disabled()</span>
-      </summary>
-      <div class="hint-content">
-        <div class="code-block">
-<pre>disabled(f.notes, (&#123; valueOf &#125;) =&gt; !valueOf(f.hasSpecialInstructions));
-required(f.notes);
-minLength(f.notes, 10);</pre>
-        </div>
-      </div>
-    </details>
-
+    <h3>Error Summary</h3>
+    <p class="section-hint">
+      <code>orderForm().errorSummary()</code> collects all validation errors from the form and its descendants.
+    </p>
+    @if (orderForm().errorSummary().length === 0) {
+      <p class="section-hint">No errors.</p>
+    } @else {
+      <ul>
+        @for (err of orderForm().errorSummary(); track err.kind) {
+          <li>
+            <div class="field-error">
+              <span>
+                <strong>{{ err.kind }}</strong>: {{ err.message }}
+              </span>
+            </div>
+            <div>
+              <pre class="field-hint">{{ err | json }}</pre>
+            </div>
+          </li>
+        }
+      </ul>
+    }
   </section>
 
 </div>

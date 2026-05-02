@@ -23,11 +23,19 @@
  * ================================================================
  */
 
-import { Component, signal } from '@angular/core';
+import {Component, signal} from '@angular/core';
 import {
-  form, FormField,
-  required, email, minLength, pattern,
-  schema, apply, applyWhen, hidden, disabled,
+  apply,
+  applyWhen,
+  disabled,
+  email,
+  form,
+  FormField,
+  hidden,
+  minLength,
+  pattern,
+  required,
+  schema,
 } from '@angular/forms/signals';
 
 // Reusable schemas — used with apply() inside the form schema function.
@@ -91,16 +99,10 @@ export class CDynamicFormsComponent {
     //
     // TODO A-1: Wrap the company validators in applyWhen so they only fire
     //           when customerType === 'business'.
-    //
-    // applyWhen(
-    //   f,
-    //   ({ valueOf }) => valueOf(f.customerType) === 'business',
-    //   (f) => {
-    //     required(f.companyName);
-    //     required(f.taxId);
-    //     pattern(f.taxId, /^[A-Z]{2}\d{9}$/);
-    //   },
-    // );
+    //  Hints:
+    //      use applyWhen on the entire form
+    //      companyName is required
+    //      taxId is required and should match pattern /^[A-Z]{2}\d{9}$/
 
     // ── Part B: hidden() ──────────────────────────────────────────────────
     //
@@ -112,16 +114,16 @@ export class CDynamicFormsComponent {
     // true. Hidden fields are excluded from form validation automatically.
     // In the template, switch from a model-based @if to field().hidden().
     //
-    // TODO B-1: Mark address fields as hidden when deliveryType !== 'delivery'.
+    // Check the HTML template for additional related TODOs.
     //
-    // hidden(f.address.street, ({ valueOf }) => valueOf(f.deliveryType) !== 'delivery');
-    // hidden(f.address.city,   ({ valueOf }) => valueOf(f.deliveryType) !== 'delivery');
-    // hidden(f.address.zip,    ({ valueOf }) => valueOf(f.deliveryType) !== 'delivery');
+    // TODO B-1: Mark all 3 address fields as hidden when deliveryType !== 'delivery'.
+    //  Hints:
+    //      ({ valueOf }) => valueOf(f.deliveryType) !== 'delivery')
     //
     // TODO B-2: After adding hidden(), also add address validation so the
     //           fields are required when they ARE shown:
-    //
-    // apply(f.address, addressSchema);
+    //  Hints:
+    //      apply addressSchema
 
     // ── Part C: disabled() ────────────────────────────────────────────────
     //
@@ -132,16 +134,13 @@ export class CDynamicFormsComponent {
     // The notes textarea should be disabled when hasSpecialInstructions is false,
     // and required (with a minimum length) when it is enabled.
     //
-    // TODO C-1: Disable the notes field when hasSpecialInstructions is false.
+    // Check the HTML template for additional related TODOs.
     //
-    // disabled(f.notes, ({ valueOf }) => !valueOf(f.hasSpecialInstructions));
+    // TODO C-1: Disable the notes field when hasSpecialInstructions is false.
     //
     // TODO C-2: Make notes required and at least 10 chars when enabled.
     //           Because disabled() skips validators when inactive, you can add
     //           these unconditionally — they only fire when the field is enabled.
-    //
-    // required(f.notes);
-    // minLength(f.notes, 10);
   });
 
   // KEEP AS-IS — mutate the model to toggle enums / booleans
@@ -157,7 +156,10 @@ export class CDynamicFormsComponent {
     this.orderModel.update(m => ({ ...m, hasSpecialInstructions: !m.hasSpecialInstructions }));
   }
 
-  onSubmit(): void {
+  onSubmit(event: SubmitEvent): void {
+    // prevent default form behavior causing site refresh and preventing further processing from this method
+    event.preventDefault();
+
     console.log('Order submitted:', this.orderModel());
     alert('Order placed! Check the console.');
   }
