@@ -11,9 +11,9 @@
  *  - Guard the submit button and use submit() for controlled submission
  *
  * ✅ PART A – Done when all built-in validators show correct errors  (15 min)
- * ✅ PART B – Done when strength + confirm-password errors appear     (10 min)
+ * ✅ PART B – Done when strength + confirm-password errors appear    (10 min)
  * ✅ PART C – Done when username availability is checked live +
- *             submit shows a spinner and success message              (15 min)
+ *             submit shows a spinner and success message             (15 min)
  *
  * 💡 Hints are in the collapsible sections at the bottom of the page.
  * ================================================================
@@ -58,67 +58,46 @@ export class BValidationsSubmitComponent {
     confirmPassword: '',
   });
 
-  // TODO D-1: show a form errors summary below the form. See template for corresponding TODO
-
   protected readonly regForm = form(this.regModel, (f) => {
 
     // ── Part A: Built-in validators ──────────────────────────────────────────
     //
-    // TODO A-1: Validate username
-    //   required(f.username);
-    //   minLength(f.username, 3);
-    //   maxLength(f.username, 20);
+    // TODO A-1: Validate username: is required and should have length 3 - 20
     //
-    // TODO A-2: Validate email
-    //   required(f.email);
-    //   email(f.email);
+    // TODO A-2: Validate email: is required and of proper email format
     //
-    // TODO A-3: Validate password
-    //   required(f.password);
-    //   minLength(f.password, 8);
+    // TODO A-3: Validate password: is required and should have length >= 8
     //
-    // TODO A-4: Validate confirmPassword (required only — cross-field comes in Part B)
-    //   required(f.confirmPassword);
+    // TODO A-4: Validate confirmPassword: required only — cross-field comes in Part B
 
     // ── Part B: Custom validators ────────────────────────────────────────────
     //
-    // TODO B-1: Password strength — add AFTER the built-in password validators.
+    // TODO B-1: Password strength — add AFTER the built-in password validators to only trigger if filled.
     //   Use validate() to check that the password contains at least one
     //   uppercase letter, one digit, and one special character (!@#$%^&*).
     //   Return null if valid, or { kind: 'passwordStrength', message: '...' } if not.
-    //
-    //   validate(f.password, ({ value }) => {
-    //     const v = value();
-    //     const strong = /[A-Z]/.test(v) && /[0-9]/.test(v) && /[!@#$%^&*]/.test(v);
-    //     return strong ? null : { kind: 'passwordStrength', message: 'Need uppercase, number, and special char (!@#$%^&*)' };
-    //   });
+    //   Hints:
+    //     pattern: /[A-Z]/.test(v) && /[0-9]/.test(v) && /[!@#$%^&*]/.test(v);
+    //     error object: { kind: 'passwordStrength', message: 'Need uppercase, number, and special char (!@#$%^&*)' };
     //
     // TODO B-2: Cross-field — confirmPassword must equal password.
     //   validate() receives valueOf — use it to read another field's current value.
     //   Angular tracks this as a dependency, so re-validation triggers when password changes.
-    //
-    //   validate(f.confirmPassword, ({ value, valueOf }) => {
-    //     return value() !== valueOf(f.password)
-    //       ? { kind: 'mismatch', message: 'Passwords do not match' }
-    //       : null;
-    //   });
+    //   Hints:
+    //       error object: { kind: 'mismatch', message: 'Passwords do not match' }
 
     // ── Part C: Async validation ─────────────────────────────────────────────
     //
     // TODO C-1: Debounce username input so the API is not called on every keystroke.
-    //   debounce(f.username, 400);
     //
     // TODO C-2: Check username availability via the API.
     //   validateHttp checks the field asynchronously — the field enters pending() state
     //   while the request is in flight.
-    //
-    //   validateHttp(f.username, {
-    //     request: ({ value }) =>
-    //       `${API_BASE}/api/auth/check-username?username=${encodeURIComponent(value())}`,
-    //     onSuccess: (res: { available: boolean }) =>
-    //       res.available ? null : { kind: 'taken', message: 'Username is already taken' },
-    //     onError: () => ({ kind: 'networkError', message: 'Could not verify username — try again' }),
-    //   });
+    //   Hints:
+    //       use request, onSuccess, onError
+    //       request URL: `${API_BASE}/api/auth/check-username?username=${encodeURIComponent(value())}`
+    //       success but not available: { kind: 'taken', message: 'Username is already taken' }
+    //       error: { kind: 'networkError', message: 'Could not verify username — try again' }
   });
 
   // ── Part C: Submit ───────────────────────────────────────────────────────────
@@ -126,19 +105,23 @@ export class BValidationsSubmitComponent {
   // TODO C-3: Use submit() to handle form submission.
   //   submit() only runs the action when the form is valid AND not pending.
   //   While running, regForm().submitting() is true — the template shows a spinner.
-  //
-  //   async performSubmit(): Promise<ValidationError[] | null> {
-  //     // Simulate an API call — replace with this.api.register(...) if desired
-  //     await new Promise(r => setTimeout(r, 1500));
-  //     this.successMessage.set(`Welcome, ${this.regModel().username}!`);
-  //     this.regForm().reset({ username: '', email: '', password: '', confirmPassword: '' });
-  //     return null; // null = success, return ValidationError[] to map server errors to fields
-  //   });
+  //   Hints:
+  //       event.preventDefault();
+  //       simulate an API call with setTimeout(r, 1500)
+  //       set successMessage: `Welcome, ${this.regModel().username}!`
+  //       reset the form
+  //       return null; // null = success, return ValidationError[] to map server errors from API call to fields
+  async performSubmit(): Promise<ValidationError[] | null> {
+    return null;
+  }
 
   async onSubmit(): Promise<void> {
     this.successMessage.set(null);
-    // TODO C-3: Replace this stub with submit() ↑
+    // TODO C-3: Replace this stub with submit( performSubmit() ) ↑
     console.log('Form value:', this.regModel());
     alert('Implement submit() in TODO C-3!');
   }
+
+  // TODO D-1: show a form errors summary below the form. See template for corresponding TODO
+
 }

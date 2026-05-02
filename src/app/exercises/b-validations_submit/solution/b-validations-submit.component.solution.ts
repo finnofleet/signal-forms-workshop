@@ -26,7 +26,7 @@ const API_BASE = 'https://signal-forms-workshop-api.matestefanczyk.workers.dev';
   templateUrl: './b-validations-submit.component.solution.html',
   styleUrl: '../b-validations-submit.component.css'
 })
-export class BValidationsSubmitComponent {
+export class BValidationsSubmitSolutionComponent {
   private readonly api = inject(ApiService);
 
   protected readonly successMessage = signal<string | null>(null);
@@ -116,7 +116,7 @@ export class BValidationsSubmitComponent {
     await new Promise(r => setTimeout(r, 1500));
     this.successMessage.set(`Welcome, ${this.regModel().username}!`);
     this.regForm().reset({ username: '', email: '', password: '', confirmPassword: '' });
-    return null; // null = success, return ValidationError[] to map server errors to fields
+    return null; // null = success, return ValidationError[] to map server errors from API call to fields
   }
 
   async onSubmit(event: SubmitEvent): Promise<void> {
@@ -126,6 +126,6 @@ export class BValidationsSubmitComponent {
     this.successMessage.set(null); // reset any previous messages
     console.log('Form value:', this.regModel());
     console.log('Form state:', this.regForm());
-    await submit(this.regForm, () => this.performSubmit());
+    await submit(this.regForm, this.performSubmit);
   }
 }
