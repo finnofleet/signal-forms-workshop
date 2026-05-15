@@ -54,7 +54,7 @@
         </div>
 
         @if (regForm.username().touched() && regForm.username().invalid() && !regForm.username().pending()) {
-          @for (err of regForm.username().errors(); track err.kind) {
+          @for (err of regForm.username().errors(); track $index) {
             <div class="field-error">
               @switch (err.kind) {
                 @case ('required')     { Username is required }
@@ -84,7 +84,7 @@
           placeholder="your@email.com"
         />
         @if (regForm.email().touched() && regForm.email().invalid()) {
-          @for (err of regForm.email().errors(); track err.kind) {
+          @for (err of regForm.email().errors(); track $index) {
             <div class="field-error">
               @switch (err.kind) {
                 @case ('required')         { Email is required }
@@ -109,7 +109,7 @@
           placeholder="Min 8 chars, must include uppercase, number, special char"
         />
         @if (regForm.password().touched() && regForm.password().invalid()) {
-          @for (err of regForm.password().errors(); track err.kind) {
+          @for (err of regForm.password().errors(); track $index) {
             <div class="field-error">
               @switch (err.kind) {
                 @case ('required')         { Password is required }
@@ -133,7 +133,7 @@
           placeholder="Repeat your password"
         />
         @if (regForm.confirmPassword().touched() && regForm.confirmPassword().invalid()) {
-          @for (err of regForm.confirmPassword().errors(); track err.kind) {
+          @for (err of regForm.confirmPassword().errors(); track $index) {
             <div class="field-error">
               @switch (err.kind) {
                 @case ('required') { Please confirm your password }
@@ -198,7 +198,7 @@
       <p class="section-hint">No errors.</p>
     } @else {
       <ul>
-        @for (err of regForm().errorSummary(); track err.kind) {
+        @for (err of regForm().errorSummary(); track $index) {
           <li>
             <div class="field-error">
               <span>
