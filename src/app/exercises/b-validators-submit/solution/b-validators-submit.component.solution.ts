@@ -5,15 +5,14 @@ import {
   email,
   form,
   FormField,
+  FormRoot,
   maxLength,
   minLength,
   pattern,
   required,
-  submit,
   validate,
   validateAsync,
   validateHttp,
-  ValidationError,
 } from '@angular/forms/signals';
 import {ApiService} from '../../../shared/services/api.service';
 
@@ -22,7 +21,7 @@ const API_BASE = 'https://signal-forms-workshop-api.matestefanczyk.workers.dev';
 @Component({
   selector: 'app-b-validators-submit',
   standalone: true,
-  imports: [FormField, JsonPipe],
+  imports: [FormField, FormRoot, JsonPipe],
   templateUrl: './b-validators-submit.component.solution.html',
   styleUrl: '../b-validators-submit.component.css'
 })
@@ -88,7 +87,6 @@ export class BValidatorsSubmitSolutionComponent {
       onError: () => ({ kind: 'networkError', message: 'Could not verify username — try again' }),
     });
 
-
     debounce(f.email, 400);
 
     validateAsync(f.email, {
@@ -107,25 +105,17 @@ export class BValidatorsSubmitSolutionComponent {
         : null,
       onError: () => ({ kind: 'domainCheckError', message: 'Could not verify email domain — try again' }),
     });
-  });
-
+  },
   // ── Part C: Submit ───────────────────────────────────────────────────────────
-
-  async performSubmit(): Promise<ValidationError[] | null> {
-    // Simulate an API call — replace with this.api.register(...) if desired
-    await new Promise(r => setTimeout(r, 1500));
-    this.successMessage.set(`Welcome, ${this.regModel().username}!`);
-    this.regForm().reset({ username: '', email: '', password: '', confirmPassword: '' });
-    return null; // null = success, return ValidationError[] to map server errors from API call to fields
-  }
-
-  async onSubmit(event: SubmitEvent): Promise<void> {
-    // prevent default form behavior causing site refresh and preventing further processing from this method
-    event.preventDefault();
-
-    this.successMessage.set(null); // reset any previous messages
-    console.log('Form value:', this.regModel());
-    console.log('Form state:', this.regForm());
-    await submit(this.regForm, this.performSubmit);
-  }
+  {
+    submission: {
+      action: async (form) => {
+        await new Promise(r => setTimeout(r, 1500)); // simulate API request
+        this.successMessage.set(`Welcome, ${this.regModel().username}!`);
+        form().reset({ username: '', email: '', password: '', confirmPassword: '' });
+        // null = success, return ValidationError | ValidationError[] to map server errors from API call to fields
+        return null;
+      }
+    }
+  });
 }

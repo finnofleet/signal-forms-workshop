@@ -28,7 +28,7 @@
   <section class="exercise-section">
     <h3>Account Registration</h3>
 
-    <form (submit)="onSubmit($event)">
+    <form [formRoot]="regForm">
 
       <!-- USERNAME ─────────────────────────────────────────────────────── -->
       <div class="form-group">

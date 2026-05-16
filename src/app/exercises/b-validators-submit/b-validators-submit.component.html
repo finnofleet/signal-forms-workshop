@@ -29,6 +29,8 @@
     <h3>Account Registration</h3>
 
     <form (submit)="onSubmit()">
+<!-- TODO C-3: switch the form definition to use the submission action -->
+<!--    <form [formRoot]="regForm">-->
 
       <!-- USERNAME ─────────────────────────────────────────────────────── -->
       <div class="form-group">
@@ -274,17 +276,18 @@ validateHttp(f.username, &#123;
   onError: () =&gt; (&#123; kind: 'networkError', message: 'Could not verify username — try again' &#125;),
 &#125;);
 
-// submit() runs the action only when the form is valid AND not pending.
+// Form submission runs the action only when the form is valid AND not pending.
 // While running, regForm().submitting() === true.
-// Return null for success, or a ValidationError[] to map server errors to fields.
-async onSubmit(): Promise&lt;void&gt; &#123;
-  this.successMessage.set(null);
-  await submit(this.regForm, async () =&gt; &#123;
-    await new Promise(r =&gt; setTimeout(r, 1500)); // simulate API
-    this.successMessage.set(`Welcome, $&#123;this.regModel().username&#125;!`);
-    this.regModel.set(&#123; username: '', email: '', password: '', confirmPassword: '' &#125;);
-    return null;
-  &#125;);
+// Return null for success, or ValidationError | ValidationError[] to map server errors to fields.
+&#123;
+  submission: &#123;
+    action: async (form) => &#123;
+      await new Promise(r =&gt; setTimeout(r, 1500)); // simulate API
+      this.successMessage.set(`Welcome, $&#123;this.regModel().username&#125;!`);
+      form().reset(&#123; username: '', email: '', password: '', confirmPassword: '' &#125;);
+      return null;
+    &#125;
+  &#125;
 &#125;</pre>
         </div>
       </div>

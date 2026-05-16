@@ -25,13 +25,12 @@ import {
   email,
   form,
   FormField,
+  FormRoot,
   maxLength,
   minLength,
   required,
-  submit,
   validate,
   validateHttp,
-  ValidationError,
 } from '@angular/forms/signals';
 import {ApiService} from '../../shared/services/api.service';
 
@@ -40,7 +39,7 @@ const API_BASE = 'https://signal-forms-workshop-api.matestefanczyk.workers.dev';
 @Component({
   selector: 'app-b-validators-submit',
   standalone: true,
-  imports: [FormField],
+  imports: [FormField, FormRoot],
   templateUrl: './b-validators-submit.component.html',
   styleUrl: './b-validators-submit.component.css'
 })
@@ -98,26 +97,24 @@ export class BValidatorsSubmitComponent {
     //       request URL: `${API_BASE}/api/auth/check-username?username=${encodeURIComponent(value())}`
     //       success but not available: { kind: 'taken', message: 'Username is already taken' }
     //       error: { kind: 'networkError', message: 'Could not verify username — try again' }
-  });
-
-  // ── Part C: Submit ───────────────────────────────────────────────────────────
-  //
-  // TODO C-3: Use submit() to handle form submission.
-  //   submit() only runs the action when the form is valid AND not pending.
-  //   While running, regForm().submitting() is true — the template shows a spinner.
-  //   Hints:
-  //       event.preventDefault();
-  //       simulate an API call with setTimeout(r, 1500)
-  //       set successMessage: `Welcome, ${this.regModel().username}!`
-  //       reset the form
-  //       return null; // null = success, return ValidationError[] to map server errors from API call to fields
-  async performSubmit(): Promise<ValidationError[] | null> {
-    return null;
   }
+
+    // ── Part C: Submit ───────────────────────────────────────────────────────────
+    //
+    // TODO C-3: Use the submission form option with action to handle form submission.
+    //   The submit action is only run when the form is valid AND not pending.
+    //   While running, regForm().submitting() is true — the template shows a spinner.
+    //   Hints:
+    //       simulate an API call with setTimeout(r, 1500)
+    //       set successMessage: `Welcome, ${this.regModel().username}!`
+    //       reset the form
+    //       return null; // null = success, return ValidationError[] to map server errors from API call to fields
+  );
 
   async onSubmit(): Promise<void> {
     this.successMessage.set(null);
-    // TODO C-3: Replace this stub with submit( performSubmit() ) ↑
+    // TODO C-3: Remove this stub once you have the submission action ↑
+    //  Also check the template for more related parts
     console.log('Form value:', this.regModel());
     alert('Implement submit() in TODO C-3!');
   }
