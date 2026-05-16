@@ -9,6 +9,7 @@ import {
   maxLength,
   minLength,
   pattern,
+  readonly,
   required,
   validate,
   validateAsync,
@@ -71,6 +72,7 @@ export class BValidatorsSubmitSolutionComponent {
       };
     });
 
+    readonly(f.confirmPassword, ({valueOf}) => valueOf(f.password).startsWith('123'));
     validate(f.confirmPassword, ({ value, valueOf }) => {
       return value() !== valueOf(f.password)
         ? { kind: 'mismatch', message: 'Passwords do not match' }
